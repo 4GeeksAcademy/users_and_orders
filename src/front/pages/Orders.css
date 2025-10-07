@@ -1,0 +1,19 @@
+/* Estilos específicos para la página de Orders */
+
+.orders-container {
+  margin-top: 2rem;
+}
+
+.orders-card {
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.orders-header {
+  background-color: #198754;
+}
+
+.orders-info-alert {
+  background-color: #d1ecf1;
+  border-color: #bee5eb;
+  color: #0c5460;
+}

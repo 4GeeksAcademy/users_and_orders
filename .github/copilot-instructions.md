@@ -11,23 +11,38 @@ Desarrollar una aplicación de gestión de usuarios y pedidos (Users & Orders) u
 #### Se evaluará:
 
 - [ ] CRUD completo
-- [X] Conexión coherente entre frontend y backend
-- [X] Uso de base de datos relacional con ORM
+- [x] Conexión coherente entre frontend y backend
+- [x] Uso de base de datos relacional con ORM
 - [ ] Diseño UI mínimo con librería CSS
 - [ ] Buenas prácticas de organización de código
 
 ---
 
-### � Reglas de Estilo y Código
+### 🎨 Reglas de Estilo y Código
 
 #### Frontend (React)
 
 **Estilos CSS:**
+
 - ✅ **TODOS los estilos deben crearse en archivos `.css` separados**
 - ❌ **NO usar estilos inline** (atributo `style={{}}` en JSX)
-- 📁 Cada componente/página debe tener su propio archivo CSS si necesita estilos personalizados
+- 📁 **Cada componente/página DEBE tener su propio archivo CSS**
+  - `Users.jsx` → `Users.css`
+  - `Orders.jsx` → `Orders.css`
+  - Los archivos CSS deben estar en el mismo directorio que el componente
 - 📝 Usar nombres de clase descriptivos y semánticos
 - 🎨 Se permite usar clases de Bootstrap u otra librería CSS para componentes estándar
+- 🔗 **Importar el CSS en el componente:** `import "./Users.css";` o `import "./Orders.css";`
+
+**Ejemplo de estructura correcta:**
+
+```
+src/front/pages/
+  ├── Users.jsx
+  ├── Users.css      ← Archivo CSS específico para Users
+  ├── Orders.jsx
+  └── Orders.css     ← Archivo CSS específico para Orders
+```
 
 ---
 
@@ -41,20 +56,23 @@ Desarrollar una aplicación de gestión de usuarios y pedidos (Users & Orders) u
 - [ ] Order: id, user_id (relación con User), product_name, amount, created_at
 
 **Endpoints obligatorios:**
-- [X] `POST /users`: crear usuario
-- [X] `GET /users`: listar usuarios (paginación opcional)
-- [X] `POST /orders`: crear pedido asociado a usuario
-- [X] `GET /orders`: listar pedidos (join para mostrar nombre de usuario)
-- [X] `GET /users/<id>/orders`: listar pedidos de un usuario específico
+
+- [x] `POST /users`: crear usuario
+- [x] `GET /users`: listar usuarios (paginación opcional)
+- [x] `POST /orders`: crear pedido asociado a usuario
+- [x] `GET /orders`: listar pedidos (join para mostrar nombre de usuario)
+- [x] `GET /users/<id>/orders`: listar pedidos de un usuario específico
 
 **Validaciones:**
-- [X] No permitir emails duplicados
-- [X] Email con formato válido
-- [X] amount > 0
+
+- [x] No permitir emails duplicados
+- [x] Email con formato válido
+- [x] amount > 0
 
 **Base de datos:**
-- [X] Usar SQLite o Postgres
-- [X] ORM: SQLAlchemy (Flask-Migrate opcional)
+
+- [x] Usar SQLite o Postgres
+- [x] ORM: SQLAlchemy (Flask-Migrate opcional)
 
 #### Frontend (React + CSS Library)
 

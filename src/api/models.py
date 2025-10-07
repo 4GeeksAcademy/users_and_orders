@@ -20,7 +20,8 @@ class User(db.Model):
             "id": self.id,
             "name": self.name,
             "email": self.email,
-            "created_at": self.created_at.isoformat()
+            "created_at": self.created_at.isoformat(),
+            "order_count": len(self.orders)
         }
 
 

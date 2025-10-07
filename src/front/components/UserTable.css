@@ -1,0 +1,166 @@
+/* UserTable.css - Estilos para el componente de tabla de usuarios */
+
+/* Nombre de usuario clickeable */
+.user-name-clickable {
+  cursor: pointer;
+  color: #0d6efd;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.user-name-clickable:hover {
+  color: #0a58ca;
+  background-color: rgba(13, 110, 253, 0.1);
+  text-decoration: underline;
+}
+
+/* Overlay de fondo oscuro */
+.user-popover-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1059;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Ventana flotante (Popover) */
+.user-popover {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1060;
+  background: white;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  min-width: 320px;
+  max-width: 400px;
+  animation: fadeInPopover 0.2s ease-in-out;
+  /* Asegura que el popover siempre esté centrado desde el inicio */
+  margin: 0;
+}
+
+@keyframes fadeInPopover {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+/* Header del popover */
+.user-popover-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 8px 8px 0 0;
+}
+
+.user-popover-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+}
+
+.user-popover-close {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.user-popover-close:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Body del popover */
+.user-popover-body {
+  padding: 16px;
+}
+
+.user-popover-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 0.9rem;
+}
+
+.user-popover-item:last-child {
+  border-bottom: none;
+}
+
+.user-popover-item strong {
+  min-width: 80px;
+  color: #495057;
+}
+
+.user-popover-item span {
+  color: #6c757d;
+  flex: 1;
+}
+
+.user-popover-item .badge {
+  font-size: 0.85rem;
+  padding: 4px 10px;
+}
+
+/* Footer del popover */
+.user-popover-footer {
+  padding: 12px 16px;
+  border-top: 1px solid #f0f0f0;
+  background-color: #f8f9fa;
+  border-radius: 0 0 8px 8px;
+}
+
+.user-popover-footer .btn {
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.user-popover-footer .btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .user-popover {
+    min-width: 280px;
+    max-width: 90vw;
+  }
+}

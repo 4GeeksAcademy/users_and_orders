@@ -11,8 +11,8 @@ Desarrollar una aplicación de gestión de usuarios y pedidos (Users & Orders) u
 #### Se evaluará:
 
 - [ ] CRUD completo
-- [ ] Conexión coherente entre frontend y backend
-- [ ] Uso de base de datos relacional con ORM
+- [X] Conexión coherente entre frontend y backend
+- [X] Uso de base de datos relacional con ORM
 - [ ] Diseño UI mínimo con librería CSS
 - [ ] Buenas prácticas de organización de código
 
@@ -28,23 +28,20 @@ Desarrollar una aplicación de gestión de usuarios y pedidos (Users & Orders) u
 - [ ] Order: id, user_id (relación con User), product_name, amount, created_at
 
 **Endpoints obligatorios:**
-
-- [ ] `POST /users`: crear usuario
-- [ ] `GET /users`: listar usuarios (paginación opcional)
-- [ ] `POST /orders`: crear pedido asociado a usuario
-- [ ] `GET /orders`: listar pedidos (join para mostrar nombre de usuario)
-- [ ] `GET /users/<id>/orders`: listar pedidos de un usuario específico
+- [X] `POST /users`: crear usuario
+- [X] `GET /users`: listar usuarios (paginación opcional)
+- [X] `POST /orders`: crear pedido asociado a usuario
+- [X] `GET /orders`: listar pedidos (join para mostrar nombre de usuario)
+- [X] `GET /users/<id>/orders`: listar pedidos de un usuario específico
 
 **Validaciones:**
-
-- [ ] No permitir emails duplicados
-- [ ] Email con formato válido
-- [ ] amount > 0
+- [X] No permitir emails duplicados
+- [X] Email con formato válido
+- [X] amount > 0
 
 **Base de datos:**
-
-- [ ] Usar SQLite o Postgres
-- [ ] ORM: SQLAlchemy (Flask-Migrate opcional)
+- [X] Usar SQLite o Postgres
+- [X] ORM: SQLAlchemy (Flask-Migrate opcional)
 
 #### Frontend (React + CSS Library)
 

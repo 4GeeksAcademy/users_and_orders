@@ -73,42 +73,18 @@ export const Orders = () => {
   };
 
   return (
-    <div className="container-fluid mt-4 orders-page">
-      {/* Header */}
-      <div className="row mb-4">
-        <div className="col-12">
-          <div className="page-header">
-            <h1 className="page-title">
-              <i className="fas fa-shopping-cart me-3"></i>
-              Gestión de Pedidos
-            </h1>
-            <div className="header-actions">
-              <button
-                className="btn btn-outline-success me-2"
-                onClick={handleExport}
-                disabled={loading || orders.length === 0}
-                title="Exportar todos los pedidos a JSON"
-              >
-                <i className="fas fa-download me-2"></i>
-                Exportar JSON
-              </button>
-              <button
-                className="btn btn-info"
-                onClick={() => setShowBatchUpload(!showBatchUpload)}
-                disabled={loading}
-              >
-                <i className={`fas fa-${showBatchUpload ? 'times' : 'upload'} me-2`}></i>
-                {showBatchUpload ? 'Cerrar Carga Masiva' : 'Carga Masiva'}
-              </button>
+    <div className="orders-container container mt-5">
+      <div className="row">
+        {/* Formulario de creación de pedidos */}
+        <div className="col-lg-4 mb-4">
+          {error && (
+            <div className="alert alert-danger alert-dismissible fade show" role="alert">
+              <i className="fas fa-exclamation-circle me-2"></i>
+              {error}
             </div>
-          </div>
-        </div>
-      </div>
+          )}
 
-      {/* Mensajes de éxito */}
-      {successMessage && (
-        <div className="row mb-3">
-          <div className="col-12">
+          {successMessage && (
             <div className="alert alert-success alert-dismissible fade show" role="alert">
               <i className="fas fa-check-circle me-2"></i>
               {successMessage}
@@ -118,76 +94,80 @@ export const Orders = () => {
                 onClick={() => setSuccessMessage("")}
               ></button>
             </div>
-          </div>
-        </div>
-      )}
+          )}
 
-      {/* Mensajes de error */}
-      {error && (
-        <div className="row mb-3">
-          <div className="col-12">
-            <div className="alert alert-danger alert-dismissible fade show" role="alert">
-              <i className="fas fa-exclamation-triangle me-2"></i>
-              {error}
+          <OrderForm onOrderCreated={handleOrderCreated} />
+
+          {/* Botón de carga masiva */}
+          <div className="card orders-card mt-4">
+            <div className="card-body text-center">
+              <button
+                className="btn btn-outline-primary w-100"
+                onClick={() => setShowBatchUpload(!showBatchUpload)}
+                disabled={loading}
+              >
+                <i className="fas fa-file-import me-2"></i>
+                Carga Masiva de Pedidos
+              </button>
+              <small className="text-muted d-block mt-2">
+                Importar múltiples pedidos desde archivo JSON
+              </small>
             </div>
           </div>
-        </div>
-      )}
 
-      {/* Carga masiva (condicional) */}
-      {showBatchUpload && (
-        <div className="row mb-4">
-          <div className="col-12">
-            <OrderBatchUpload onBatchUpload={handleBatchUpload} />
-          </div>
-        </div>
-      )}
-
-      {/* Formulario de creación */}
-      <div className="row mb-4">
-        <div className="col-12">
-          <OrderForm onOrderCreated={handleOrderCreated} />
-        </div>
-      </div>
-
-      {/* Estadísticas */}
-      <div className="row mb-3">
-        <div className="col-12">
-          <div className="stats-card">
-            <div className="stat-item">
-              <i className="fas fa-shopping-cart stat-icon"></i>
-              <div className="stat-content">
-                <div className="stat-value">{pagination.total}</div>
+          {/* Estadísticas */}
+          <div className="card orders-card mt-4">
+            <div className="card-header orders-header text-white">
+              <h5 className="mb-0">
+                <i className="fas fa-chart-bar me-2"></i>
+                Estadísticas
+              </h5>
+            </div>
+            <div className="card-body">
+              <div className="stat-item-vertical mb-3">
+                <i className="fas fa-shopping-cart stat-icon-lg text-primary"></i>
+                <div className="stat-value-lg">{pagination.total}</div>
                 <div className="stat-label">Total de Pedidos</div>
               </div>
-            </div>
-            <div className="stat-item">
-              <i className="fas fa-box-open stat-icon"></i>
-              <div className="stat-content">
+              <hr />
+              <div className="stat-item-vertical mb-2">
                 <div className="stat-value">{orders.length}</div>
                 <div className="stat-label">En esta página</div>
               </div>
-            </div>
-            <div className="stat-item">
-              <i className="fas fa-file-alt stat-icon"></i>
-              <div className="stat-content">
+              <div className="stat-item-vertical">
                 <div className="stat-value">{pagination.total_pages}</div>
                 <div className="stat-label">Páginas totales</div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Tabla de pedidos */}
-      <div className="row mb-4">
-        <div className="col-12">
-          <div className="card shadow-sm">
-            <div className="card-header bg-success text-white">
-              <h5 className="mb-0">
-                <i className="fas fa-list me-2"></i>
+        {/* Lista de pedidos */}
+        <div className="col-lg-8">
+          <div className="card orders-card">
+            <div className="card-header orders-header text-white d-flex justify-content-between align-items-center">
+              <h4 className="mb-0">
+                <i className="fas fa-shopping-cart me-2"></i>
                 Lista de Pedidos
-              </h5>
+              </h4>
+              <div className="d-flex align-items-center gap-2">
+                {pagination.total > 0 && (
+                  <>
+                    <button
+                      className="btn btn-sm btn-light"
+                      onClick={handleExport}
+                      disabled={loading}
+                      title="Exportar todos los pedidos a JSON"
+                    >
+                      <i className="fas fa-file-export me-1"></i>
+                      Exportar JSON
+                    </button>
+                    <span className="badge bg-light text-dark">
+                      Total: {pagination.total}
+                    </span>
+                  </>
+                )}
+              </div>
             </div>
             <div className="card-body">
               <OrderTable
@@ -195,25 +175,25 @@ export const Orders = () => {
                 loading={loading}
                 onStatusChange={handleStatusChange}
               />
+
+              {/* Paginación */}
+              <Pagination
+                currentPage={pagination.page}
+                totalPages={pagination.total_pages}
+                onPageChange={changePage}
+              />
             </div>
           </div>
         </div>
       </div>
 
-      {/* Paginación */}
-      {!loading && orders.length > 0 && (
-        <div className="row mb-4">
-          <div className="col-12">
-            <Pagination
-              currentPage={pagination.page}
-              totalPages={pagination.total_pages}
-              onPageChange={changePage}
-              itemsPerPage={pagination.per_page}
-              totalItems={pagination.total}
-            />
-          </div>
-        </div>
-      )}
+      {/* Modal de carga masiva */}
+      <OrderBatchUpload
+        show={showBatchUpload}
+        onClose={() => setShowBatchUpload(false)}
+        onBatchUpload={handleBatchUpload}
+        disabled={loading}
+      />
     </div>
   );
 };

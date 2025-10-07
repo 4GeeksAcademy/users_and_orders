@@ -60,8 +60,8 @@ export const OrderForm = ({ onOrderCreated }) => {
 
         if (!formData.amount) {
             newErrors.amount = "La cantidad es requerida";
-        } else if (isNaN(formData.amount) || parseFloat(formData.amount) <= 0) {
-            newErrors.amount = "La cantidad debe ser un número mayor que 0";
+        } else if (!/^\d+$/.test(formData.amount) || parseInt(formData.amount) <= 0) {
+            newErrors.amount = "La cantidad debe ser un número entero mayor que 0";
         }
 
         setErrors(newErrors);
@@ -81,7 +81,7 @@ export const OrderForm = ({ onOrderCreated }) => {
             const orderData = {
                 user_id: parseInt(formData.user_id),
                 product_name: formData.product_name.trim(),
-                amount: parseFloat(formData.amount),
+                amount: parseInt(formData.amount, 10),
             };
 
             await onOrderCreated(orderData);
@@ -106,82 +106,77 @@ export const OrderForm = ({ onOrderCreated }) => {
             <div className="card-header bg-success text-white">
                 <h5 className="mb-0">
                     <i className="fas fa-plus-circle me-2"></i>
-                    Crear Nuevo Pedido
+                    Crear Pedido
                 </h5>
             </div>
             <div className="card-body">
                 <form onSubmit={handleSubmit}>
-                    <div className="row">
-                        {/* Selector de Usuario */}
-                        <div className="col-md-4 mb-3">
-                            <label htmlFor="user_id" className="form-label">
-                                Usuario <span className="text-danger">*</span>
-                            </label>
-                            <select
-                                className={`form-select ${errors.user_id ? "is-invalid" : ""}`}
-                                id="user_id"
-                                name="user_id"
-                                value={formData.user_id}
-                                onChange={handleChange}
-                                disabled={loadingUsers || isSubmitting}
-                            >
-                                <option value="">
-                                    {loadingUsers ? "Cargando usuarios..." : "Selecciona un usuario"}
+                    {/* Usuario */}
+                    <div className="mb-3">
+                        <label htmlFor="user_id" className="form-label">
+                            Usuario <span className="text-danger">*</span>
+                        </label>
+                        <select
+                            className={`form-select ${errors.user_id ? "is-invalid" : ""}`}
+                            id="user_id"
+                            name="user_id"
+                            value={formData.user_id}
+                            onChange={handleChange}
+                            disabled={loadingUsers || isSubmitting}
+                        >
+                            <option value="">
+                                {loadingUsers ? "Cargando usuarios..." : "Selecciona un usuario"}
+                            </option>
+                            {users.map((user) => (
+                                <option key={user.id} value={user.id}>
+                                    {user.name} ({user.email})
                                 </option>
-                                {users.map((user) => (
-                                    <option key={user.id} value={user.id}>
-                                        {user.name} ({user.email})
-                                    </option>
-                                ))}
-                            </select>
-                            {errors.user_id && (
-                                <div className="invalid-feedback">{errors.user_id}</div>
-                            )}
-                        </div>
-
-                        {/* Nombre del Producto */}
-                        <div className="col-md-4 mb-3">
-                            <label htmlFor="product_name" className="form-label">
-                                Nombre del Producto <span className="text-danger">*</span>
-                            </label>
-                            <input
-                                type="text"
-                                className={`form-control ${errors.product_name ? "is-invalid" : ""}`}
-                                id="product_name"
-                                name="product_name"
-                                value={formData.product_name}
-                                onChange={handleChange}
-                                placeholder="Ej: Laptop, Mouse, Teclado"
-                                disabled={isSubmitting}
-                            />
-                            {errors.product_name && (
-                                <div className="invalid-feedback">{errors.product_name}</div>
-                            )}
-                        </div>
-
-                        {/* Cantidad */}
-                        <div className="col-md-4 mb-3">
-                            <label htmlFor="amount" className="form-label">
-                                Cantidad <span className="text-danger">*</span>
-                            </label>
-                            <input
-                                type="number"
-                                className={`form-control ${errors.amount ? "is-invalid" : ""}`}
-                                id="amount"
-                                name="amount"
-                                value={formData.amount}
-                                onChange={handleChange}
-                                placeholder="Ej: 5"
-                                min="0.01"
-                                step="0.01"
-                                disabled={isSubmitting}
-                            />
-                            {errors.amount && (
-                                <div className="invalid-feedback">{errors.amount}</div>
-                            )}
-                        </div>
+                            ))}
+                        </select>
+                        {errors.user_id && (
+                            <div className="invalid-feedback">{errors.user_id}</div>
+                        )}
                     </div>
-
+                    {/* Nombre del Producto */}
+                    <div className="mb-3">
+                        <label htmlFor="product_name" className="form-label">
+                            Nombre del Producto <span className="text-danger">*</span>
+                        </label>
+                        <input
+                            type="text"
+                            className={`form-control ${errors.product_name ? "is-invalid" : ""}`}
+                            id="product_name"
+                            name="product_name"
+                            value={formData.product_name}
+                            onChange={handleChange}
+                            placeholder="Ej: Laptop, Mouse, Teclado"
+                            disabled={isSubmitting}
+                        />
+                        {errors.product_name && (
+                            <div className="invalid-feedback">{errors.product_name}</div>
+                        )}
+                    </div>
+                    {/* Cantidad */}
+                    <div className="mb-3">
+                        <label htmlFor="amount" className="form-label">
+                            Cantidad <span className="text-danger">*</span>
+                        </label>
+                        <input
+                            type="number"
+                            className={`form-control ${errors.amount ? "is-invalid" : ""}`}
+                            id="amount"
+                            name="amount"
+                            value={formData.amount}
+                            onChange={handleChange}
+                            placeholder="Ej: 5"
+                            min="1"
+                            step="1"
+                            disabled={isSubmitting}
+                        />
+                        {errors.amount && (
+                            <div className="invalid-feedback">{errors.amount}</div>
+                        )}
+                    </div>
                     {/* Botón Submit */}
                     <div className="d-grid">
                         <button

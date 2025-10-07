@@ -4,17 +4,20 @@ import { useUsers } from "../hooks/useUsers";
 import { UserForm } from "../components/UserForm";
 import { UserTable } from "../components/UserTable";
 import { Pagination } from "../components/Pagination";
+import { UserBatchUpload } from "../components/UserBatchUpload";
+import apiService from "../services/apiService";
 import "./Users.css";
 
 export const Users = () => {
   const navigate = useNavigate();
 
   // Usar el hook personalizado para gestionar usuarios
-  const { users, pagination, loading, error, createUser, changePage, setError } = useUsers();
+  const { users, pagination, loading, error, createUser, changePage, setError, fetchUsers } = useUsers();
 
   // Estados locales para el formulario
   const [formLoading, setFormLoading] = useState(false);
   const [success, setSuccess] = useState(null);
+  const [showBatchModal, setShowBatchModal] = useState(false);
 
   // Manejar envío del formulario
   const handleFormSubmit = async (formData) => {
@@ -40,6 +43,20 @@ export const Users = () => {
   // Navegar a la página de pedidos de un usuario
   const handleViewOrders = (userId, userName) => {
     navigate(`/orders?user_id=${userId}&user_name=${encodeURIComponent(userName)}`);
+  };
+
+  // Manejar carga masiva de usuarios
+  const handleBatchUpload = async (batchData) => {
+    try {
+      const response = await apiService.users.batchCreate(batchData);
+
+      // Recargar la lista de usuarios
+      await fetchUsers(pagination.page);
+
+      return response;
+    } catch (error) {
+      throw error;
+    }
   };
 
   return (
@@ -82,6 +99,23 @@ export const Users = () => {
               <UserForm onSubmit={handleFormSubmit} loading={formLoading} />
             </div>
           </div>
+
+          {/* Botón de carga masiva */}
+          <div className="card users-card mt-4">
+            <div className="card-body text-center">
+              <button
+                className="btn btn-outline-primary w-100"
+                onClick={() => setShowBatchModal(true)}
+                disabled={formLoading}
+              >
+                <i className="fas fa-file-import me-2"></i>
+                Carga Masiva de Usuarios
+              </button>
+              <small className="text-muted d-block mt-2">
+                Importar múltiples usuarios desde archivo JSON
+              </small>
+            </div>
+          </div>
         </div>
 
         {/* Lista de usuarios */}
@@ -115,6 +149,14 @@ export const Users = () => {
           </div>
         </div>
       </div>
+
+      {/* Modal de carga masiva */}
+      <UserBatchUpload
+        show={showBatchModal}
+        onClose={() => setShowBatchModal(false)}
+        onUploadSuccess={handleBatchUpload}
+        disabled={formLoading}
+      />
     </div>
   );
 };

@@ -35,37 +35,37 @@ def create_user():
     """Create a new user"""
     try:
         body = request.get_json()
-        
+
         # Validate required fields
         if not body:
             return jsonify({"error": "Request body is required"}), 400
-        
+
         if "name" not in body or not body["name"].strip():
             return jsonify({"error": "Name is required"}), 400
-        
+
         if "email" not in body or not body["email"].strip():
             return jsonify({"error": "Email is required"}), 400
-        
+
         # Validate email format
         if not validate_email(body["email"]):
             return jsonify({"error": "Invalid email format"}), 400
-        
+
         # Check if email already exists
         existing_user = User.query.filter_by(email=body["email"]).first()
         if existing_user:
             return jsonify({"error": "Email already exists"}), 400
-        
+
         # Create new user
         new_user = User(
             name=body["name"].strip(),
             email=body["email"].strip().lower()
         )
-        
+
         db.session.add(new_user)
         db.session.commit()
-        
+
         return jsonify(new_user.serialize()), 201
-    
+
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
@@ -78,22 +78,22 @@ def get_users():
         # Optional pagination
         page = request.args.get('page', 1, type=int)
         per_page = request.args.get('per_page', 10, type=int)
-        
+
         # Validate pagination parameters
         if page < 1:
             return jsonify({"error": "Page must be greater than 0"}), 400
         if per_page < 1 or per_page > 100:
             return jsonify({"error": "Per page must be between 1 and 100"}), 400
-        
+
         # Query with pagination
         users_pagination = User.query.paginate(
             page=page,
             per_page=per_page,
             error_out=False
         )
-        
+
         users = [user.serialize() for user in users_pagination.items]
-        
+
         return jsonify({
             "users": users,
             "total": users_pagination.total,
@@ -101,7 +101,7 @@ def get_users():
             "per_page": per_page,
             "total_pages": users_pagination.pages
         }), 200
-    
+
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -114,17 +114,137 @@ def get_user_orders(user_id):
         user = User.query.get(user_id)
         if not user:
             return jsonify({"error": "User not found"}), 404
-        
+
         # Get user's orders
         orders = Order.query.filter_by(user_id=user_id).all()
-        
+
         return jsonify({
             "user": user.serialize(),
             "orders": [order.serialize() for order in orders],
             "total_orders": len(orders)
         }), 200
-    
+
     except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@api.route('/users/batch', methods=['POST'])
+def batch_create_users():
+    """Create multiple users from JSON in batch"""
+    try:
+        body = request.get_json()
+
+        # Validate request body
+        if not body:
+            return jsonify({"error": "Request body is required"}), 400
+
+        if "users" not in body or not isinstance(body["users"], list):
+            return jsonify({"error": "users array is required"}), 400
+
+        if len(body["users"]) == 0:
+            return jsonify({"error": "users array cannot be empty"}), 400
+
+        # Limit batch size to prevent overload
+        if len(body["users"]) > 1000:
+            return jsonify({"error": "Maximum 1000 users per batch"}), 400
+
+        created_users = []
+        errors = []
+
+        # Get all existing emails for duplicate check
+        existing_emails = set(
+            email[0].lower() for email in db.session.query(User.email).all()
+        )
+
+        # Process each user
+        for index, user_data in enumerate(body["users"]):
+            try:
+                # Validate required fields
+                if "name" not in user_data or not str(user_data["name"]).strip():
+                    errors.append({
+                        "index": index,
+                        "data": user_data,
+                        "error": "name is required"
+                    })
+                    continue
+
+                if "email" not in user_data or not str(user_data["email"]).strip():
+                    errors.append({
+                        "index": index,
+                        "data": user_data,
+                        "error": "email is required"
+                    })
+                    continue
+
+                email = str(user_data["email"]).strip().lower()
+
+                # Validate email format
+                if not validate_email(email):
+                    errors.append({
+                        "index": index,
+                        "data": user_data,
+                        "error": "Invalid email format"
+                    })
+                    continue
+
+                # Check for duplicate email in database
+                if email in existing_emails:
+                    errors.append({
+                        "index": index,
+                        "data": user_data,
+                        "error": f"Email {email} already exists"
+                    })
+                    continue
+
+                # Check for duplicate email in current batch
+                if email in [u.email for u in created_users]:
+                    errors.append({
+                        "index": index,
+                        "data": user_data,
+                        "error": f"Duplicate email {email} in batch"
+                    })
+                    continue
+
+                # Create new user
+                new_user = User(
+                    name=str(user_data["name"]).strip(),
+                    email=email
+                )
+
+                db.session.add(new_user)
+                created_users.append(new_user)
+                # Add to set to prevent duplicates in same batch
+                existing_emails.add(email)
+
+            except Exception as e:
+                errors.append({
+                    "index": index,
+                    "data": user_data,
+                    "error": str(e)
+                })
+
+        # Commit all valid users
+        if created_users:
+            db.session.commit()
+
+        # Prepare response
+        response = {
+            "success": True,
+            "created": len(created_users),
+            "failed": len(errors),
+            "total_processed": len(body["users"]),
+            "users": [user.serialize() for user in created_users]
+        }
+
+        if errors:
+            response["errors"] = errors
+
+        status_code = 201 if created_users else 400
+
+        return jsonify(response), status_code
+
+    except Exception as e:
+        db.session.rollback()
         return jsonify({"error": str(e)}), 500
 
 
@@ -135,20 +255,20 @@ def create_order():
     """Create a new order"""
     try:
         body = request.get_json()
-        
+
         # Validate required fields
         if not body:
             return jsonify({"error": "Request body is required"}), 400
-        
+
         if "user_id" not in body:
             return jsonify({"error": "User ID is required"}), 400
-        
+
         if "product_name" not in body or not body["product_name"].strip():
             return jsonify({"error": "Product name is required"}), 400
-        
+
         if "amount" not in body:
             return jsonify({"error": "Amount is required"}), 400
-        
+
         # Validate amount
         try:
             amount = float(body["amount"])
@@ -156,24 +276,24 @@ def create_order():
                 return jsonify({"error": "Amount must be greater than 0"}), 400
         except (ValueError, TypeError):
             return jsonify({"error": "Amount must be a valid number"}), 400
-        
+
         # Check if user exists
         user = User.query.get(body["user_id"])
         if not user:
             return jsonify({"error": "User not found"}), 404
-        
+
         # Create new order
         new_order = Order(
             user_id=body["user_id"],
             product_name=body["product_name"].strip(),
             amount=amount
         )
-        
+
         db.session.add(new_order)
         db.session.commit()
-        
+
         return jsonify(new_order.serialize()), 201
-    
+
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
@@ -186,22 +306,22 @@ def get_orders():
         # Optional pagination
         page = request.args.get('page', 1, type=int)
         per_page = request.args.get('per_page', 10, type=int)
-        
+
         # Validate pagination parameters
         if page < 1:
             return jsonify({"error": "Page must be greater than 0"}), 400
         if per_page < 1 or per_page > 100:
             return jsonify({"error": "Per page must be between 1 and 100"}), 400
-        
+
         # Query with join to include user information
         orders_pagination = Order.query.join(User).paginate(
             page=page,
             per_page=per_page,
             error_out=False
         )
-        
+
         orders = [order.serialize() for order in orders_pagination.items]
-        
+
         return jsonify({
             "orders": orders,
             "total": orders_pagination.total,
@@ -209,7 +329,7 @@ def get_orders():
             "per_page": per_page,
             "total_pages": orders_pagination.pages
         }), 200
-    
+
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -220,17 +340,17 @@ def export_orders():
     try:
         # Get all orders without pagination
         orders = Order.query.join(User).all()
-        
+
         # Serialize all orders
         orders_data = [order.serialize() for order in orders]
-        
+
         return jsonify({
             "success": True,
             "total": len(orders_data),
             "orders": orders_data,
             "exported_at": datetime.now().isoformat()
         }), 200
-    
+
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -240,24 +360,24 @@ def batch_create_orders():
     """Create multiple orders from JSON in batch"""
     try:
         body = request.get_json()
-        
+
         # Validate request body
         if not body:
             return jsonify({"error": "Request body is required"}), 400
-        
+
         if "orders" not in body or not isinstance(body["orders"], list):
             return jsonify({"error": "orders array is required"}), 400
-        
+
         if len(body["orders"]) == 0:
             return jsonify({"error": "orders array cannot be empty"}), 400
-        
+
         # Limit batch size to prevent overload
         if len(body["orders"]) > 1000:
             return jsonify({"error": "Maximum 1000 orders per batch"}), 400
-        
+
         created_orders = []
         errors = []
-        
+
         # Process each order
         for index, order_data in enumerate(body["orders"]):
             try:
@@ -268,21 +388,21 @@ def batch_create_orders():
                         "error": "user_id is required"
                     })
                     continue
-                
+
                 if "product_name" not in order_data or not str(order_data["product_name"]).strip():
                     errors.append({
                         "index": index,
                         "error": "product_name is required"
                     })
                     continue
-                
+
                 if "amount" not in order_data:
                     errors.append({
                         "index": index,
                         "error": "amount is required"
                     })
                     continue
-                
+
                 # Validate amount
                 try:
                     amount = float(order_data["amount"])
@@ -298,7 +418,7 @@ def batch_create_orders():
                         "error": "amount must be a valid number"
                     })
                     continue
-                
+
                 # Check if user exists
                 user = User.query.get(order_data["user_id"])
                 if not user:
@@ -307,27 +427,27 @@ def batch_create_orders():
                         "error": f"User with id {order_data['user_id']} not found"
                     })
                     continue
-                
+
                 # Create new order
                 new_order = Order(
                     user_id=order_data["user_id"],
                     product_name=str(order_data["product_name"]).strip(),
                     amount=amount
                 )
-                
+
                 db.session.add(new_order)
                 created_orders.append(new_order)
-            
+
             except Exception as e:
                 errors.append({
                     "index": index,
                     "error": str(e)
                 })
-        
+
         # Commit all valid orders
         if created_orders:
             db.session.commit()
-        
+
         # Prepare response
         response = {
             "success": True,
@@ -336,14 +456,14 @@ def batch_create_orders():
             "total_processed": len(body["orders"]),
             "orders": [order.serialize() for order in created_orders]
         }
-        
+
         if errors:
             response["errors"] = errors
-        
+
         status_code = 201 if created_orders else 400
-        
+
         return jsonify(response), status_code
-    
+
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 500

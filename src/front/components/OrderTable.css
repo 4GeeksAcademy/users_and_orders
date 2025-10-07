@@ -1,0 +1,139 @@
+/* Estilos para la tabla de pedidos */
+.order-table {
+  margin-bottom: 0;
+  font-size: 0.95rem;
+}
+
+.order-table thead th {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid #198754;
+  padding: 1rem 0.75rem;
+}
+
+.order-row {
+  transition: all 0.2s ease;
+  cursor: default;
+}
+
+.order-row:hover {
+  background-color: #f8f9fa;
+  transform: translateX(2px);
+}
+
+.order-id {
+  font-weight: 600;
+  width: 80px;
+}
+
+.order-id .badge {
+  font-size: 0.9rem;
+  padding: 0.4rem 0.6rem;
+}
+
+/* Información del usuario */
+.user-info {
+  min-width: 200px;
+}
+
+.user-details {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.user-avatar {
+  font-size: 2rem;
+  color: #198754;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  font-weight: 600;
+  color: #212529;
+  margin-bottom: 0.1rem;
+}
+
+/* Nombre del producto */
+.product-name {
+  font-weight: 500;
+  color: #495057;
+  min-width: 200px;
+}
+
+/* Cantidad */
+.amount {
+  font-weight: 600;
+  width: 120px;
+}
+
+.amount .badge {
+  font-size: 0.9rem;
+  padding: 0.5rem 0.75rem;
+  font-weight: 600;
+}
+
+/* Fecha de creación */
+.created-date {
+  min-width: 180px;
+  color: #6c757d;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .order-table {
+    font-size: 0.85rem;
+  }
+
+  .order-table thead th {
+    font-size: 0.75rem;
+    padding: 0.75rem 0.5rem;
+  }
+
+  .user-details {
+    gap: 0.5rem;
+  }
+
+  .user-avatar {
+    font-size: 1.5rem;
+  }
+
+  .user-name {
+    font-size: 0.9rem;
+  }
+
+  .product-name {
+    min-width: 150px;
+  }
+}
+
+@media (max-width: 576px) {
+  .table-responsive {
+    border: none;
+  }
+
+  .order-table {
+    font-size: 0.8rem;
+  }
+
+  .order-id {
+    width: 60px;
+  }
+
+  .amount {
+    width: 100px;
+  }
+
+  .created-date {
+    min-width: 140px;
+  }
+}

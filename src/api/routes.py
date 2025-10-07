@@ -5,6 +5,7 @@ from flask import Flask, request, jsonify, url_for, Blueprint
 from api.models import db, User, Order
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
+from datetime import datetime
 import re
 
 api = Blueprint('api', __name__)
@@ -210,4 +211,139 @@ def get_orders():
         }), 200
     
     except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@api.route('/orders/export', methods=['GET'])
+def export_orders():
+    """Export all orders to JSON"""
+    try:
+        # Get all orders without pagination
+        orders = Order.query.join(User).all()
+        
+        # Serialize all orders
+        orders_data = [order.serialize() for order in orders]
+        
+        return jsonify({
+            "success": True,
+            "total": len(orders_data),
+            "orders": orders_data,
+            "exported_at": datetime.now().isoformat()
+        }), 200
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@api.route('/orders/batch', methods=['POST'])
+def batch_create_orders():
+    """Create multiple orders from JSON in batch"""
+    try:
+        body = request.get_json()
+        
+        # Validate request body
+        if not body:
+            return jsonify({"error": "Request body is required"}), 400
+        
+        if "orders" not in body or not isinstance(body["orders"], list):
+            return jsonify({"error": "orders array is required"}), 400
+        
+        if len(body["orders"]) == 0:
+            return jsonify({"error": "orders array cannot be empty"}), 400
+        
+        # Limit batch size to prevent overload
+        if len(body["orders"]) > 1000:
+            return jsonify({"error": "Maximum 1000 orders per batch"}), 400
+        
+        created_orders = []
+        errors = []
+        
+        # Process each order
+        for index, order_data in enumerate(body["orders"]):
+            try:
+                # Validate required fields
+                if "user_id" not in order_data:
+                    errors.append({
+                        "index": index,
+                        "error": "user_id is required"
+                    })
+                    continue
+                
+                if "product_name" not in order_data or not str(order_data["product_name"]).strip():
+                    errors.append({
+                        "index": index,
+                        "error": "product_name is required"
+                    })
+                    continue
+                
+                if "amount" not in order_data:
+                    errors.append({
+                        "index": index,
+                        "error": "amount is required"
+                    })
+                    continue
+                
+                # Validate amount
+                try:
+                    amount = float(order_data["amount"])
+                    if amount <= 0:
+                        errors.append({
+                            "index": index,
+                            "error": "amount must be greater than 0"
+                        })
+                        continue
+                except (ValueError, TypeError):
+                    errors.append({
+                        "index": index,
+                        "error": "amount must be a valid number"
+                    })
+                    continue
+                
+                # Check if user exists
+                user = User.query.get(order_data["user_id"])
+                if not user:
+                    errors.append({
+                        "index": index,
+                        "error": f"User with id {order_data['user_id']} not found"
+                    })
+                    continue
+                
+                # Create new order
+                new_order = Order(
+                    user_id=order_data["user_id"],
+                    product_name=str(order_data["product_name"]).strip(),
+                    amount=amount
+                )
+                
+                db.session.add(new_order)
+                created_orders.append(new_order)
+            
+            except Exception as e:
+                errors.append({
+                    "index": index,
+                    "error": str(e)
+                })
+        
+        # Commit all valid orders
+        if created_orders:
+            db.session.commit()
+        
+        # Prepare response
+        response = {
+            "success": True,
+            "created": len(created_orders),
+            "failed": len(errors),
+            "total_processed": len(body["orders"]),
+            "orders": [order.serialize() for order in created_orders]
+        }
+        
+        if errors:
+            response["errors"] = errors
+        
+        status_code = 201 if created_orders else 400
+        
+        return jsonify(response), status_code
+    
+    except Exception as e:
+        db.session.rollback()
         return jsonify({"error": str(e)}), 500

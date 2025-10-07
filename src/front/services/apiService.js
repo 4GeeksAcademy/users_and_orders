@@ -119,6 +119,12 @@ export const apiService = {
      * @returns {Promise} - { user, orders: [], total_orders }
      */
     getOrders: (userId) => request(`/api/users/${userId}/orders`),
+
+    /**
+     * Exportar todos los usuarios a JSON
+     * @returns {Promise} - { success, total, users: [], exported_at }
+     */
+    export: () => request("/api/users/export"),
   },
 
   // ========== PEDIDOS ==========

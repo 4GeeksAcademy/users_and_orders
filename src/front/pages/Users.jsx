@@ -21,6 +21,7 @@ export const Users = () => {
   const [showBatchModal, setShowBatchModal] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [editLoading, setEditLoading] = useState(false);
+  const [exportLoading, setExportLoading] = useState(false);
 
   // Manejar envío del formulario
   const handleFormSubmit = async (formData) => {
@@ -106,6 +107,43 @@ export const Users = () => {
     }
   };
 
+  // Manejar exportación de usuarios
+  const handleExportUsers = async () => {
+    setExportLoading(true);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      const response = await apiService.users.export();
+
+      // Crear archivo JSON para descargar
+      const jsonString = JSON.stringify(response, null, 2);
+      const blob = new Blob([jsonString], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+
+      // Crear elemento de descarga temporal
+      const link = document.createElement("a");
+      link.href = url;
+      const timestamp = new Date().toISOString().split('T')[0];
+      link.download = `usuarios_${timestamp}.json`;
+
+      // Simular click para descargar
+      document.body.appendChild(link);
+      link.click();
+
+      // Limpiar
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      setSuccess(`${response.total} usuarios exportados exitosamente!`);
+      setTimeout(() => setSuccess(null), 5000);
+    } catch (error) {
+      setError(`Error al exportar usuarios: ${error.message}`);
+    } finally {
+      setExportLoading(false);
+    }
+  };
+
   return (
     <div className="users-container container mt-5">
       <div className="row">
@@ -173,11 +211,33 @@ export const Users = () => {
                 <i className="fas fa-users me-2"></i>
                 Lista de Usuarios
               </h4>
-              {pagination.total > 0 && (
-                <span className="badge bg-light text-dark">
-                  Total: {pagination.total}
-                </span>
-              )}
+              <div className="d-flex align-items-center gap-2">
+                {pagination.total > 0 && (
+                  <>
+                    <button
+                      className="btn btn-sm btn-light"
+                      onClick={handleExportUsers}
+                      disabled={exportLoading}
+                      title="Exportar todos los usuarios a JSON"
+                    >
+                      {exportLoading ? (
+                        <>
+                          <span className="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                          Exportando...
+                        </>
+                      ) : (
+                        <>
+                          <i className="fas fa-file-export me-1"></i>
+                          Exportar JSON
+                        </>
+                      )}
+                    </button>
+                    <span className="badge bg-light text-dark">
+                      Total: {pagination.total}
+                    </span>
+                  </>
+                )}
+              </div>
             </div>
             <div className="card-body">
               <UserTable

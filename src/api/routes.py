@@ -128,6 +128,27 @@ def get_user_orders(user_id):
         return jsonify({"error": str(e)}), 500
 
 
+@api.route('/users/export', methods=['GET'])
+def export_users():
+    """Export all users to JSON"""
+    try:
+        # Get all users without pagination
+        users = User.query.all()
+
+        # Serialize all users
+        users_data = [user.serialize() for user in users]
+
+        return jsonify({
+            "success": True,
+            "total": len(users_data),
+            "users": users_data,
+            "exported_at": datetime.now().isoformat()
+        }), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 @api.route('/users/batch', methods=['POST'])
 def batch_create_users():
     """Create multiple users from JSON in batch"""

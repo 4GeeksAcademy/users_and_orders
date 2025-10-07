@@ -18,7 +18,20 @@ Desarrollar una aplicación de gestión de usuarios y pedidos (Users & Orders) u
 
 ---
 
-### 📌 Requisitos
+### � Reglas de Estilo y Código
+
+#### Frontend (React)
+
+**Estilos CSS:**
+- ✅ **TODOS los estilos deben crearse en archivos `.css` separados**
+- ❌ **NO usar estilos inline** (atributo `style={{}}` en JSX)
+- 📁 Cada componente/página debe tener su propio archivo CSS si necesita estilos personalizados
+- 📝 Usar nombres de clase descriptivos y semánticos
+- 🎨 Se permite usar clases de Bootstrap u otra librería CSS para componentes estándar
+
+---
+
+### �📌 Requisitos
 
 #### Backend (Flask + SQLAlchemy)
 

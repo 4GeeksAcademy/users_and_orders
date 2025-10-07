@@ -30,6 +30,8 @@ class Order(db.Model):
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
     product_name: Mapped[str] = mapped_column(String(120), nullable=False)
     amount: Mapped[float] = mapped_column(Float, nullable=False)
+    status: Mapped[str] = mapped_column(
+        String(20), default="pending", nullable=False)
     created_at: Mapped[DateTime] = mapped_column(
         DateTime, default=func.now(), nullable=False)
 
@@ -41,6 +43,7 @@ class Order(db.Model):
             "user_id": self.user_id,
             "product_name": self.product_name,
             "amount": self.amount,
+            "status": self.status,
             "created_at": self.created_at.isoformat(),
             "user_name": self.user.name if self.user else None
         }

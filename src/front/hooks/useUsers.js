@@ -64,6 +64,36 @@ export const useUsers = (initialPage = 1, perPage = 10) => {
     }
   };
 
+  // Función para actualizar un usuario
+  const updateUser = async (userId, userData) => {
+    try {
+      const updatedUser = await apiService.users.update(userId, userData);
+
+      // Recargar la lista después de actualizar
+      await fetchUsers(pagination.page);
+
+      return { success: true, user: updatedUser };
+    } catch (err) {
+      console.error("Error updating user:", err);
+      return { success: false, error: err.message };
+    }
+  };
+
+  // Función para eliminar un usuario
+  const deleteUser = async (userId) => {
+    try {
+      await apiService.users.delete(userId);
+
+      // Recargar la lista después de eliminar
+      await fetchUsers(pagination.page);
+
+      return { success: true };
+    } catch (err) {
+      console.error("Error deleting user:", err);
+      return { success: false, error: err.message };
+    }
+  };
+
   // Cambiar página
   const changePage = (newPage) => {
     if (newPage >= 1 && newPage <= pagination.total_pages) {
@@ -83,6 +113,8 @@ export const useUsers = (initialPage = 1, perPage = 10) => {
     error,
     fetchUsers,
     createUser,
+    updateUser,
+    deleteUser,
     changePage,
     setError,
   };

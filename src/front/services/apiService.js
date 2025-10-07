@@ -77,6 +77,30 @@ export const apiService = {
       }),
 
     /**
+     * Actualizar un usuario existente
+     * @param {number} userId - ID del usuario
+     * @param {Object} userData - Datos a actualizar
+     * @param {string} userData.name - Nombre del usuario (opcional)
+     * @param {string} userData.email - Email del usuario (opcional)
+     * @returns {Promise} - Usuario actualizado
+     */
+    update: (userId, userData) =>
+      request(`/api/users/${userId}`, {
+        method: "PUT",
+        body: JSON.stringify(userData),
+      }),
+
+    /**
+     * Eliminar un usuario (solo si no tiene pedidos)
+     * @param {number} userId - ID del usuario
+     * @returns {Promise} - { success, message }
+     */
+    delete: (userId) =>
+      request(`/api/users/${userId}`, {
+        method: "DELETE",
+      }),
+
+    /**
      * Crear múltiples usuarios en lote desde JSON
      * @param {Object} batchData - Datos del lote
      * @param {Array} batchData.users - Array de objetos con { name, email }
@@ -123,6 +147,18 @@ export const apiService = {
       request("/api/orders", {
         method: "POST",
         body: JSON.stringify(orderData),
+      }),
+
+    /**
+     * Actualizar el estado de un pedido
+     * @param {number} orderId - ID del pedido
+     * @param {string} status - Nuevo estado (pending, completed, cancelled)
+     * @returns {Promise} - Pedido actualizado
+     */
+    updateStatus: (orderId, status) =>
+      request(`/api/orders/${orderId}`, {
+        method: "PATCH",
+        body: JSON.stringify({ status }),
       }),
 
     /**

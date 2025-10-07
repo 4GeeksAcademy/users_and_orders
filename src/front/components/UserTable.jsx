@@ -5,10 +5,13 @@ import "./UserTable.css";
  * Componente de tabla de usuarios
  * @param {Array} users - Lista de usuarios a mostrar
  * @param {Function} onViewOrders - Función a ejecutar al hacer click en "Ver Pedidos"
+ * @param {Function} onEdit - Función a ejecutar al hacer click en "Editar"
+ * @param {Function} onDelete - Función a ejecutar al hacer click en "Eliminar"
  * @param {boolean} loading - Estado de carga
  */
-export const UserTable = ({ users, onViewOrders, loading = false }) => {
+export const UserTable = ({ users, onViewOrders, onEdit, onDelete, loading = false }) => {
     const [selectedUser, setSelectedUser] = useState(null);
+    const [showTooltip, setShowTooltip] = useState(null);
 
     // Formatear fecha
     const formatDate = (dateString) => {
@@ -30,6 +33,32 @@ export const UserTable = ({ users, onViewOrders, loading = false }) => {
     // Cerrar el popover
     const handleClosePopover = () => {
         setSelectedUser(null);
+    };
+
+    // Manejar click en editar
+    const handleEdit = (e, user) => {
+        e.stopPropagation();
+        onEdit(user);
+    };
+
+    // Manejar click en eliminar
+    const handleDelete = (e, user) => {
+        e.stopPropagation();
+
+        // Verificar si el usuario tiene pedidos
+        if (user.order_count > 0) {
+            alert(`No se puede eliminar el usuario "${user.name}" porque tiene ${user.order_count} pedido(s) asociado(s).`);
+            return;
+        }
+
+        // Confirmar eliminación
+        const confirmDelete = window.confirm(
+            `¿Está seguro que desea eliminar al usuario "${user.name}"?\n\nEsta acción no se puede deshacer.`
+        );
+
+        if (confirmDelete) {
+            onDelete(user.id);
+        }
     };
 
     if (loading) {
@@ -78,14 +107,43 @@ export const UserTable = ({ users, onViewOrders, loading = false }) => {
                                     </span>
                                 </td>
                                 <td className="text-center">
-                                    <button
-                                        className="btn btn-sm btn-outline-primary"
-                                        onClick={() => onViewOrders(user.id, user.name)}
-                                        title={`Ver pedidos de ${user.name}`}
-                                    >
-                                        <i className="fas fa-shopping-cart me-1"></i>
-                                        Ver Pedidos
-                                    </button>
+                                    <div className="btn-group" role="group">
+                                        <button
+                                            className="btn btn-sm btn-outline-primary"
+                                            onClick={() => onViewOrders(user.id, user.name)}
+                                            title={`Ver pedidos de ${user.name}`}
+                                        >
+                                            <i className="fas fa-shopping-cart me-1"></i>
+                                            Pedidos
+                                        </button>
+                                        <button
+                                            className="btn btn-sm btn-outline-warning"
+                                            onClick={(e) => handleEdit(e, user)}
+                                            title={`Editar ${user.name}`}
+                                        >
+                                            <i className="fas fa-edit"></i>
+                                        </button>
+                                        <div
+                                            className="position-relative d-inline-block"
+                                            onMouseEnter={() => user.order_count > 0 && setShowTooltip(user.id)}
+                                            onMouseLeave={() => setShowTooltip(null)}
+                                        >
+                                            <button
+                                                className="btn btn-sm btn-outline-danger"
+                                                onClick={(e) => handleDelete(e, user)}
+                                                title={user.order_count > 0 ? '' : `Eliminar ${user.name}`}
+                                                disabled={user.order_count > 0}
+                                            >
+                                                <i className="fas fa-trash"></i>
+                                            </button>
+                                            {showTooltip === user.id && user.order_count > 0 && (
+                                                <div className="delete-tooltip">
+                                                    <i className="fas fa-exclamation-triangle me-1"></i>
+                                                    No se puede eliminar: tiene {user.order_count} pedido{user.order_count > 1 ? 's' : ''}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                         ))}

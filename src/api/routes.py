@@ -248,6 +248,84 @@ def batch_create_users():
         return jsonify({"error": str(e)}), 500
 
 
+@api.route('/users/<int:user_id>', methods=['PUT'])
+def update_user(user_id):
+    """Update an existing user"""
+    try:
+        # Check if user exists
+        user = User.query.get(user_id)
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+
+        body = request.get_json()
+        if not body:
+            return jsonify({"error": "Request body is required"}), 400
+
+        # Update name if provided
+        if "name" in body:
+            if not body["name"].strip():
+                return jsonify({"error": "Name cannot be empty"}), 400
+            user.name = body["name"].strip()
+
+        # Update email if provided
+        if "email" in body:
+            if not body["email"].strip():
+                return jsonify({"error": "Email cannot be empty"}), 400
+
+            # Validate email format
+            if not validate_email(body["email"]):
+                return jsonify({"error": "Invalid email format"}), 400
+
+            # Check if email already exists (excluding current user)
+            existing_user = User.query.filter(
+                User.email == body["email"].strip().lower(),
+                User.id != user_id
+            ).first()
+
+            if existing_user:
+                return jsonify({"error": "Email already exists"}), 400
+
+            user.email = body["email"].strip().lower()
+
+        db.session.commit()
+        return jsonify(user.serialize()), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+
+
+@api.route('/users/<int:user_id>', methods=['DELETE'])
+def delete_user(user_id):
+    """Delete a user (only if they have no orders)"""
+    try:
+        # Check if user exists
+        user = User.query.get(user_id)
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+
+        # Check if user has orders
+        order_count = Order.query.filter_by(user_id=user_id).count()
+        if order_count > 0:
+            return jsonify({
+                "error": "Cannot delete user with existing orders",
+                "order_count": order_count
+            }), 400
+
+        # Delete user
+        db.session.delete(user)
+        db.session.commit()
+
+        return jsonify({
+            "success": True,
+            "message": f"User {user.name} deleted successfully"
+        }), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+
+
 # ============== ORDER ENDPOINTS ==============
 
 @api.route('/orders', methods=['POST'])
@@ -463,6 +541,42 @@ def batch_create_orders():
         status_code = 201 if created_orders else 400
 
         return jsonify(response), status_code
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+
+
+@api.route('/orders/<int:order_id>', methods=['PATCH'])
+def update_order_status(order_id):
+    """Update order status (pending, completed, cancelled)"""
+    try:
+        # Check if order exists
+        order = Order.query.get(order_id)
+        if not order:
+            return jsonify({"error": "Order not found"}), 404
+
+        body = request.get_json()
+        if not body:
+            return jsonify({"error": "Request body is required"}), 400
+
+        if "status" not in body:
+            return jsonify({"error": "Status is required"}), 400
+
+        # Validate status value
+        valid_statuses = ["pending", "completed", "cancelled"]
+        new_status = body["status"].lower()
+
+        if new_status not in valid_statuses:
+            return jsonify({
+                "error": f"Invalid status. Must be one of: {', '.join(valid_statuses)}"
+            }), 400
+
+        # Update status
+        order.status = new_status
+        db.session.commit()
+
+        return jsonify(order.serialize()), 200
 
     except Exception as e:
         db.session.rollback()

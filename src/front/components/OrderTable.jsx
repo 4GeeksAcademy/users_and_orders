@@ -1,7 +1,7 @@
 import React from "react";
 import "./OrderTable.css";
 
-export const OrderTable = ({ orders, loading }) => {
+export const OrderTable = ({ orders, loading, onStatusChange }) => {
     if (loading) {
         return (
             <div className="text-center py-5">
@@ -40,6 +40,59 @@ export const OrderTable = ({ orders, loading }) => {
         }).format(amount);
     };
 
+    // Obtener badge según el estado
+    const getStatusBadge = (status) => {
+        const statusConfig = {
+            pending: { color: "warning", icon: "clock", text: "Pendiente" },
+            completed: { color: "success", icon: "check-circle", text: "Completado" },
+            cancelled: { color: "danger", icon: "times-circle", text: "Cancelado" }
+        };
+
+        const config = statusConfig[status] || statusConfig.pending;
+
+        return (
+            <span className={`badge bg-${config.color}`}>
+                <i className={`fas fa-${config.icon} me-1`}></i>
+                {config.text}
+            </span>
+        );
+    };
+
+    // Manejar cambio de estado
+    const handleStatusChange = (orderId, currentStatus) => {
+        if (currentStatus === "completed") {
+            alert("Este pedido ya está completado.");
+            return;
+        }
+
+        if (currentStatus === "cancelled") {
+            alert("Este pedido está cancelado y no se puede cambiar.");
+            return;
+        }
+
+        const confirm = window.confirm("¿Desea marcar este pedido como completado?");
+        if (confirm) {
+            onStatusChange(orderId, "completed");
+        }
+    };
+
+    const handleCancelOrder = (orderId, currentStatus) => {
+        if (currentStatus === "completed") {
+            alert("No se puede cancelar un pedido completado.");
+            return;
+        }
+
+        if (currentStatus === "cancelled") {
+            alert("Este pedido ya está cancelado.");
+            return;
+        }
+
+        const confirm = window.confirm("¿Está seguro que desea cancelar este pedido?");
+        if (confirm) {
+            onStatusChange(orderId, "cancelled");
+        }
+    };
+
     return (
         <div className="table-responsive">
             <table className="table table-hover order-table">
@@ -59,9 +112,14 @@ export const OrderTable = ({ orders, loading }) => {
                             Cantidad
                         </th>
                         <th scope="col">
+                            <i className="fas fa-info-circle me-2"></i>
+                            Estado
+                        </th>
+                        <th scope="col">
                             <i className="fas fa-calendar me-2"></i>
                             Fecha de Creación
                         </th>
+                        <th scope="col" className="text-center">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -90,8 +148,31 @@ export const OrderTable = ({ orders, loading }) => {
                                     {formatAmount(order.amount)}
                                 </span>
                             </td>
+                            <td className="order-status">
+                                {getStatusBadge(order.status || "pending")}
+                            </td>
                             <td className="created-date">
                                 <small className="text-muted">{formatDate(order.created_at)}</small>
+                            </td>
+                            <td className="text-center">
+                                <div className="btn-group" role="group">
+                                    <button
+                                        className="btn btn-sm btn-success"
+                                        onClick={() => handleStatusChange(order.id, order.status || "pending")}
+                                        disabled={order.status === "completed" || order.status === "cancelled"}
+                                        title="Marcar como completado"
+                                    >
+                                        <i className="fas fa-check"></i>
+                                    </button>
+                                    <button
+                                        className="btn btn-sm btn-danger"
+                                        onClick={() => handleCancelOrder(order.id, order.status || "pending")}
+                                        disabled={order.status === "completed" || order.status === "cancelled"}
+                                        title="Cancelar pedido"
+                                    >
+                                        <i className="fas fa-times"></i>
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                     ))}

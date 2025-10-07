@@ -15,6 +15,7 @@ export const Orders = () => {
     createOrder,
     exportOrders,
     batchCreateOrders,
+    updateOrderStatus,
     changePage,
     changePerPage,
   } = useOrders();
@@ -57,6 +58,17 @@ export const Orders = () => {
     } catch (error) {
       console.error("Error batch uploading orders:", error);
       throw error;
+    }
+  };
+
+  // Manejar cambio de estado de pedido
+  const handleStatusChange = async (orderId, newStatus) => {
+    try {
+      await updateOrderStatus(orderId, newStatus);
+      setSuccessMessage(`¡Estado del pedido actualizado a ${newStatus}!`);
+      setTimeout(() => setSuccessMessage(""), 3000);
+    } catch (error) {
+      console.error("Error updating order status:", error);
     }
   };
 
@@ -178,7 +190,11 @@ export const Orders = () => {
               </h5>
             </div>
             <div className="card-body">
-              <OrderTable orders={orders} loading={loading} />
+              <OrderTable
+                orders={orders}
+                loading={loading}
+                onStatusChange={handleStatusChange}
+              />
             </div>
           </div>
         </div>

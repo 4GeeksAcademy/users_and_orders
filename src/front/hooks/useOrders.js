@@ -125,6 +125,32 @@ export const useOrders = () => {
   };
 
   /**
+   * Actualizar el estado de un pedido
+   */
+  const updateOrderStatus = async (orderId, newStatus) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const updatedOrder = await apiService.orders.updateStatus(
+        orderId,
+        newStatus
+      );
+
+      // Recargar la lista de pedidos después de actualizar
+      await fetchOrders(pagination.page, pagination.per_page);
+
+      return updatedOrder;
+    } catch (err) {
+      setError(err.message || "Error al actualizar el estado del pedido");
+      console.error("Error updating order status:", err);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /**
    * Cambiar de página
    */
   const changePage = (newPage) => {
@@ -154,6 +180,7 @@ export const useOrders = () => {
     createOrder,
     exportOrders,
     batchCreateOrders,
+    updateOrderStatus,
     changePage,
     changePerPage,
   };

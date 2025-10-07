@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useUsers } from "../hooks/useUsers";
 import { UserForm } from "../components/UserForm";
 import { UserTable } from "../components/UserTable";
+import { EditUserModal } from "../components/EditUserModal";
 import { Pagination } from "../components/Pagination";
 import { UserBatchUpload } from "../components/UserBatchUpload";
 import apiService from "../services/apiService";
@@ -12,12 +13,14 @@ export const Users = () => {
   const navigate = useNavigate();
 
   // Usar el hook personalizado para gestionar usuarios
-  const { users, pagination, loading, error, createUser, changePage, setError, fetchUsers } = useUsers();
+  const { users, pagination, loading, error, createUser, updateUser, deleteUser, changePage, setError, fetchUsers } = useUsers();
 
   // Estados locales para el formulario
   const [formLoading, setFormLoading] = useState(false);
   const [success, setSuccess] = useState(null);
   const [showBatchModal, setShowBatchModal] = useState(false);
+  const [editingUser, setEditingUser] = useState(null);
+  const [editLoading, setEditLoading] = useState(false);
 
   // Manejar envío del formulario
   const handleFormSubmit = async (formData) => {
@@ -43,6 +46,50 @@ export const Users = () => {
   // Navegar a la página de pedidos de un usuario
   const handleViewOrders = (userId, userName) => {
     navigate(`/orders?user_id=${userId}&user_name=${encodeURIComponent(userName)}`);
+  };
+
+  // Manejar apertura del modal de edición
+  const handleEdit = (user) => {
+    setEditingUser(user);
+  };
+
+  // Manejar guardado de edición
+  const handleSaveEdit = async (userData) => {
+    setEditLoading(true);
+    setSuccess(null);
+
+    const result = await updateUser(editingUser.id, userData);
+
+    if (result.success) {
+      setSuccess(`Usuario "${result.user.name}" actualizado exitosamente!`);
+      setEditingUser(null);
+
+      // Limpiar mensaje de éxito después de 5 segundos
+      setTimeout(() => setSuccess(null), 5000);
+      setEditLoading(false);
+      return {}; // Sin errores
+    } else {
+      setEditLoading(false);
+      // Retornar el error para que el modal lo maneje
+      return { email: result.error };
+    }
+  };
+
+  // Manejar eliminación de usuario
+  const handleDelete = async (userId) => {
+    setError(null);
+    setSuccess(null);
+
+    const result = await deleteUser(userId);
+
+    if (result.success) {
+      setSuccess("Usuario eliminado exitosamente!");
+
+      // Limpiar mensaje de éxito después de 5 segundos
+      setTimeout(() => setSuccess(null), 5000);
+    } else {
+      setError(`Error al eliminar usuario: ${result.error}`);
+    }
   };
 
   // Manejar carga masiva de usuarios
@@ -136,6 +183,8 @@ export const Users = () => {
               <UserTable
                 users={users}
                 onViewOrders={handleViewOrders}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
                 loading={loading}
               />
 
@@ -157,6 +206,16 @@ export const Users = () => {
         onUploadSuccess={handleBatchUpload}
         disabled={formLoading}
       />
+
+      {/* Modal de edición de usuario */}
+      {editingUser && (
+        <EditUserModal
+          user={editingUser}
+          onSave={handleSaveEdit}
+          onClose={() => setEditingUser(null)}
+          loading={editLoading}
+        />
+      )}
     </div>
   );
 };

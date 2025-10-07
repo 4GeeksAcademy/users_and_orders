@@ -9,7 +9,6 @@
   text-transform: uppercase;
   font-size: 0.85rem;
   letter-spacing: 0.5px;
-  border-bottom: 2px solid #198754;
   padding: 1rem 0.75rem;
 }
 
@@ -35,21 +34,13 @@
 
 /* Información del usuario */
 .user-info {
-  min-width: 200px;
+  min-width: 100px;
 }
 
 .user-details {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-}
-
-.user-avatar {
-  font-size: 2rem;
-  color: #198754;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .user-text {
@@ -67,9 +58,16 @@
 .product-name {
   font-weight: 500;
   color: #495057;
-  min-width: 200px;
+  min-width: 150px; /* Existing style */
 }
 
+.product-col {
+  width: 80px;
+  max-width: 120px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 /* Cantidad */
 .amount {
   font-weight: 600;
@@ -84,7 +82,7 @@
 
 /* Fecha de creación */
 .created-date {
-  min-width: 180px;
+  min-width: 100px;
   color: #6c757d;
 }
 

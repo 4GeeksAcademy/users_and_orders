@@ -96,51 +96,39 @@ export const OrderTable = ({ orders, loading, onStatusChange }) => {
     return (
         <div className="table-responsive">
             <table className="table table-hover order-table">
-                <thead className="table-success">
+                <thead>
                     <tr>
                         <th scope="col">#</th>
+                        <th scope="col">Usuario</th>
+                        <th scope="col" className="product-col">Producto</th>
                         <th scope="col">
-                            <i className="fas fa-user me-2"></i>
-                            Usuario
-                        </th>
-                        <th scope="col">
-                            <i className="fas fa-box me-2"></i>
-                            Producto
-                        </th>
-                        <th scope="col">
-                            <i className="fas fa-sort-numeric-up me-2"></i>
+                            <i className="fas me-2"></i>
                             Cantidad
                         </th>
                         <th scope="col">
-                            <i className="fas fa-info-circle me-2"></i>
+                            <i className="fas me-2"></i>
                             Estado
                         </th>
-                        <th scope="col">
-                            <i className="fas fa-calendar me-2"></i>
-                            Fecha de Creación
-                        </th>
                         <th scope="col" className="text-center">Acciones</th>
+                        <th scope="col">
+                            <i className="fas me-2"></i>
+                            Creación
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
                     {orders.map((order) => (
                         <tr key={order.id} className="order-row">
-                            <td className="order-id">
-                                <span className="badge bg-success">{order.id}</span>
-                            </td>
+                            <td className="order-id">{order.id}</td>
                             <td className="user-info">
                                 <div className="user-details">
-                                    <div className="user-avatar">
-                                        <i className="fas fa-user-circle"></i>
-                                    </div>
                                     <div className="user-text">
                                         <div className="user-name">{order.user_name}</div>
                                         <small className="text-muted">ID: {order.user_id}</small>
                                     </div>
                                 </div>
                             </td>
-                            <td className="product-name">
-                                <i className="fas fa-tag me-2 text-success"></i>
+                            <td className="product-name product-col">
                                 {order.product_name}
                             </td>
                             <td className="amount">
@@ -151,9 +139,7 @@ export const OrderTable = ({ orders, loading, onStatusChange }) => {
                             <td className="order-status">
                                 {getStatusBadge(order.status || "pending")}
                             </td>
-                            <td className="created-date">
-                                <small className="text-muted">{formatDate(order.created_at)}</small>
-                            </td>
+
                             <td className="text-center">
                                 <div className="btn-group" role="group">
                                     <button
@@ -173,6 +159,9 @@ export const OrderTable = ({ orders, loading, onStatusChange }) => {
                                         <i className="fas fa-times"></i>
                                     </button>
                                 </div>
+                            </td>
+                            <td className="created-date">
+                                <small className="text-muted">{formatDate(order.created_at)}</small>
                             </td>
                         </tr>
                     ))}

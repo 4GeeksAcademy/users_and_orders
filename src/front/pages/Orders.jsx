@@ -114,32 +114,6 @@ export const Orders = () => {
               </small>
             </div>
           </div>
-
-          {/* Estadísticas */}
-          <div className="card orders-card mt-4">
-            <div className="card-header orders-header text-white">
-              <h5 className="mb-0">
-                <i className="fas fa-chart-bar me-2"></i>
-                Estadísticas
-              </h5>
-            </div>
-            <div className="card-body">
-              <div className="stat-item-vertical mb-3">
-                <i className="fas fa-shopping-cart stat-icon-lg text-primary"></i>
-                <div className="stat-value-lg">{pagination.total}</div>
-                <div className="stat-label">Total de Pedidos</div>
-              </div>
-              <hr />
-              <div className="stat-item-vertical mb-2">
-                <div className="stat-value">{orders.length}</div>
-                <div className="stat-label">En esta página</div>
-              </div>
-              <div className="stat-item-vertical">
-                <div className="stat-value">{pagination.total_pages}</div>
-                <div className="stat-label">Páginas totales</div>
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* Lista de pedidos */}

@@ -221,3 +221,132 @@
     max-width: 90vw;
   }
 }
+
+/* Modal de confirmación de eliminación */
+.delete-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1061;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+.delete-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1062;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  min-width: 320px;
+  max-width: 450px;
+  animation: fadeInPopover 0.3s ease-in-out;
+  overflow: hidden;
+}
+
+.delete-modal-header {
+  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.delete-modal-header i {
+  font-size: 3rem;
+  color: white;
+  animation: pulseWarning 1.5s ease-in-out infinite;
+}
+
+@keyframes pulseWarning {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+.delete-modal-body {
+  padding: 24px;
+  text-align: center;
+}
+
+.delete-modal-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #212529;
+  margin-bottom: 16px;
+}
+
+.delete-modal-message {
+  font-size: 1rem;
+  color: #495057;
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+.delete-modal-message strong {
+  color: #dc3545;
+  font-weight: 600;
+}
+
+.delete-modal-warning {
+  font-size: 0.875rem;
+  color: #6c757d;
+  font-style: italic;
+  margin-bottom: 0;
+}
+
+.delete-modal-footer {
+  padding: 16px 24px;
+  background-color: #f8f9fa;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  border-top: 1px solid #dee2e6;
+}
+
+.delete-modal-footer .btn {
+  flex: 1;
+  font-weight: 500;
+  padding: 10px 20px;
+  transition: all 0.2s ease;
+}
+
+.delete-modal-footer .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.delete-modal-footer .btn-danger {
+  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+  border: none;
+}
+
+.delete-modal-footer .btn-danger:hover {
+  background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
+}
+
+@media (max-width: 768px) {
+  .delete-modal {
+    min-width: 280px;
+    max-width: 90vw;
+  }
+
+  .delete-modal-footer {
+    flex-direction: column;
+  }
+
+  .delete-modal-footer .btn {
+    width: 100%;
+  }
+}

@@ -12,6 +12,7 @@ import "./UserTable.css";
 export const UserTable = ({ users, onViewOrders, onEdit, onDelete, loading = false }) => {
     const [selectedUser, setSelectedUser] = useState(null);
     const [showTooltip, setShowTooltip] = useState(null);
+    const [userToDelete, setUserToDelete] = useState(null);
 
     // Formatear fecha
     const formatDate = (dateString) => {
@@ -47,18 +48,24 @@ export const UserTable = ({ users, onViewOrders, onEdit, onDelete, loading = fal
 
         // Verificar si el usuario tiene pedidos
         if (user.order_count > 0) {
-            alert(`No se puede eliminar el usuario "${user.name}" porque tiene ${user.order_count} pedido(s) asociado(s).`);
-            return;
+            return; // El botón ya está deshabilitado, pero por si acaso
         }
 
-        // Confirmar eliminación
-        const confirmDelete = window.confirm(
-            `¿Está seguro que desea eliminar al usuario "${user.name}"?\n\nEsta acción no se puede deshacer.`
-        );
+        // Abrir modal de confirmación
+        setUserToDelete(user);
+    };
 
-        if (confirmDelete) {
-            onDelete(user.id);
+    // Confirmar eliminación
+    const confirmDelete = () => {
+        if (userToDelete) {
+            onDelete(userToDelete.id);
+            setUserToDelete(null);
         }
+    };
+
+    // Cancelar eliminación
+    const cancelDelete = () => {
+        setUserToDelete(null);
     };
 
     if (loading) {
@@ -191,6 +198,46 @@ export const UserTable = ({ users, onViewOrders, onEdit, onDelete, loading = fal
                             >
                                 <i className="fas fa-times me-2"></i>
                                 Cerrar
+                            </button>
+                        </div>
+                    </div>
+                </>
+            )}
+
+            {/* Modal de confirmación de eliminación */}
+            {userToDelete && (
+                <>
+                    <div
+                        className="delete-modal-overlay"
+                        onClick={cancelDelete}
+                    />
+                    <div className="delete-modal">
+                        <div className="delete-modal-header">
+                            <i className="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div className="delete-modal-body">
+                            <h5 className="delete-modal-title">Confirmar Eliminación</h5>
+                            <p className="delete-modal-message">
+                                ¿Está seguro que desea eliminar al usuario <strong>"{userToDelete.name}"</strong>?
+                            </p>
+                            <p className="delete-modal-warning">
+                                Esta acción no se puede deshacer.
+                            </p>
+                        </div>
+                        <div className="delete-modal-footer">
+                            <button
+                                className="btn btn-secondary"
+                                onClick={cancelDelete}
+                            >
+                                <i className="fas fa-times me-2"></i>
+                                Cancelar
+                            </button>
+                            <button
+                                className="btn btn-danger"
+                                onClick={confirmDelete}
+                            >
+                                <i className="fas fa-trash me-2"></i>
+                                Eliminar
                             </button>
                         </div>
                     </div>

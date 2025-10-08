@@ -18,7 +18,13 @@
 
 .order-row:hover {
   background-color: #f8f9fa;
-  transform: translateX(2px);
+}
+
+/* Permitir salto de línea en la columna de productos */
+.product-col {
+  white-space: normal;
+  word-break: break-word;
+  max-width: 180px;
 }
 
 .order-id {
@@ -61,16 +67,15 @@
 }
 
 .product-col {
-  width: 80px;
-  max-width: 120px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  max-width: 180px;
+  white-space: normal;
+  word-break: break-word;
 }
 /* Cantidad */
 .amount {
   font-weight: 600;
   width: 120px;
+  text-align: center;
 }
 
 .amount .badge {

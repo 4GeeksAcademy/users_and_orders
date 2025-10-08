@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import apiService from "../services/apiService";
 import "./Home.css";
 
 export const Home = () => {
+	const navigate = useNavigate();
 	const [stats, setStats] = useState({
 		totalUsers: 0,
 		totalOrders: 0,
@@ -47,7 +49,7 @@ export const Home = () => {
 				</div>
 			) : (
 				<div className="stats-grid">
-					<div className="stat-card stat-users">
+					<div className="stat-card stat-users" onClick={() => navigate('/users')}>
 						<div className="stat-icon">👥</div>
 						<div className="stat-info">
 							<h3 className="stat-number">{stats.totalUsers}</h3>
@@ -55,7 +57,7 @@ export const Home = () => {
 						</div>
 					</div>
 
-					<div className="stat-card stat-orders">
+					<div className="stat-card stat-orders" onClick={() => navigate('/orders')}>
 						<div className="stat-icon">📦</div>
 						<div className="stat-info">
 							<h3 className="stat-number">{stats.totalOrders}</h3>
@@ -64,15 +66,6 @@ export const Home = () => {
 					</div>
 				</div>
 			)}
-
-			<div className="home-actions">
-				<a href="/users" className="action-link">
-					<button className="btn btn-primary">Ver Usuarios</button>
-				</a>
-				<a href="/orders" className="action-link">
-					<button className="btn btn-success">Ver Pedidos</button>
-				</a>
-			</div>
 		</div>
 	);
 };

@@ -1,0 +1,44 @@
+{
+  "users": [
+    {
+      "name": "María González",
+      "email": "maria.gonzalez@ejemplo.com"
+    },
+    {
+      "name": "Juan Pérez",
+      "email": "juan.perez@ejemplo.com"
+    },
+    {
+      "name": "Ana López",
+      "email": "ana.lopez@ejemplo.com"
+    },
+    {
+      "name": "Carlos Rodríguez",
+      "email": "carlos.rodriguez@ejemplo.com"
+    },
+    {
+      "name": "Laura Martínez",
+      "email": "laura.martinez@ejemplo.com"
+    },
+    {
+      "name": "Pedro Sánchez",
+      "email": "pedro.sanchez@ejemplo.com"
+    },
+    {
+      "name": "Sofia Torres",
+      "email": "sofia.torres@ejemplo.com"
+    },
+    {
+      "name": "Miguel Ramírez",
+      "email": "miguel.ramirez@ejemplo.com"
+    },
+    {
+      "name": "Isabel Flores",
+      "email": "isabel.flores@ejemplo.com"
+    },
+    {
+      "name": "Roberto Díaz",
+      "email": "roberto.diaz@ejemplo.com"
+    }
+  ]
+}

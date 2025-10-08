@@ -62,7 +62,7 @@ export const UserBatchUpload = ({ show, onClose, onUploadSuccess, disabled = fal
     reader.onload = (event) => {
       try {
         const json = JSON.parse(event.target.result);
-        
+
         // Validar estructura
         let users;
         if (Array.isArray(json)) {
@@ -98,7 +98,7 @@ export const UserBatchUpload = ({ show, onClose, onUploadSuccess, disabled = fal
     try {
       const response = await onUploadSuccess({ users: preview });
       setResult(response);
-      
+
       // Limpiar formulario si fue exitoso
       if (response.created > 0) {
         setFile(null);
@@ -164,8 +164,8 @@ export const UserBatchUpload = ({ show, onClose, onUploadSuccess, disabled = fal
   return (
     <>
       {/* Backdrop del modal */}
-      <div 
-        className={`modal fade ${show ? 'show' : ''}`} 
+      <div
+        className={`modal fade ${show ? 'show' : ''}`}
         style={{ display: show ? 'block' : 'none' }}
         tabIndex="-1"
         role="dialog"
@@ -179,9 +179,9 @@ export const UserBatchUpload = ({ show, onClose, onUploadSuccess, disabled = fal
                 <i className="fas fa-file-import me-2"></i>
                 Carga Masiva de Usuarios
               </h5>
-              <button 
-                type="button" 
-                className="btn-close btn-close-white" 
+              <button
+                type="button"
+                className="btn-close btn-close-white"
                 onClick={handleCloseModal}
                 disabled={loading}
                 aria-label="Close"
@@ -191,34 +191,34 @@ export const UserBatchUpload = ({ show, onClose, onUploadSuccess, disabled = fal
             {/* Body del Modal */}
             <div className="modal-body">
               <div className="user-batch-upload">
+                {/* Instrucciones */}
+                <div className="alert alert-info">
+                  <h6 className="alert-heading">
+                    <i className="fas fa-info-circle me-2"></i>
+                    Instrucciones
+                  </h6>
+                  <ul className="mb-0 small">
+                    <li>El archivo debe ser formato JSON</li>
+                    <li>Debe contener un array de usuarios</li>
+                    <li>Cada usuario debe tener: <code>name</code> (texto), <code>email</code> (texto válido)</li>
+                    <li>Máximo 1000 usuarios por carga</li>
+                  </ul>
+                </div>
+
+                {/* Selector de archivo */}
                 <div className="mb-3">
-                  <label className="form-label fw-bold">
+                  <label className="form-label">
                     <i className="fas fa-file-upload me-2"></i>
-                    Seleccionar Archivo JSON
+                    Seleccionar archivo JSON
                   </label>
-                  
-                  <div className="input-group">
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      className="form-control"
-                      accept=".json"
-                      onChange={handleFileChange}
-                      disabled={disabled || loading}
-                    />
-                    <button
-                      className="btn btn-outline-secondary"
-                      type="button"
-                      onClick={handleDownloadTemplate}
-                      disabled={disabled || loading}
-                      title="Descargar plantilla JSON"
-                    >
-                      <i className="fas fa-download"></i>
-                    </button>
-                  </div>
-                  <small className="text-muted">
-                    Formatos aceptados: JSON (máx. 1000 usuarios)
-                  </small>
+                  <input
+                    type="file"
+                    className="form-control"
+                    accept=".json"
+                    onChange={handleFileChange}
+                    ref={fileInputRef}
+                    disabled={loading || disabled}
+                  />
                 </div>
 
                 {/* Mensajes de error */}
@@ -416,55 +416,41 @@ export const UserBatchUpload = ({ show, onClose, onUploadSuccess, disabled = fal
 
             {/* Footer del Modal */}
             <div className="modal-footer">
-              {preview && preview.length > 0 && !result && (
-                <>
-                  <button
-                    className="btn btn-outline-secondary"
-                    onClick={handleClear}
-                    disabled={loading}
-                  >
-                    <i className="fas fa-times me-1"></i>
-                    Cancelar
-                  </button>
-                  <button
-                    className="btn btn-primary"
-                    onClick={handleUpload}
-                    disabled={loading}
-                  >
-                    {loading ? (
-                      <>
-                        <span className="spinner-border spinner-border-sm me-2" role="status"></span>
-                        Cargando...
-                      </>
-                    ) : (
-                      <>
-                        <i className="fas fa-upload me-1"></i>
-                        Cargar {preview.length} Usuario(s)
-                      </>
-                    )}
-                  </button>
-                </>
-              )}
-              
-              {result && (
-                <button
-                  className="btn btn-success"
-                  onClick={handleCloseModal}
-                >
-                  <i className="fas fa-check me-1"></i>
-                  Cerrar y Continuar
-                </button>
-              )}
-
-              {!preview && !result && (
-                <button
-                  className="btn btn-secondary"
-                  onClick={handleCloseModal}
-                  disabled={loading}
-                >
-                  Cerrar
-                </button>
-              )}
+              <button
+                type="button"
+                className="btn btn-outline-secondary"
+                onClick={handleDownloadTemplate}
+                disabled={loading}
+              >
+                <i className="fas fa-download me-2"></i>
+                Descargar Plantilla
+              </button>
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={handleCloseModal}
+                disabled={loading}
+              >
+                Cerrar
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={handleUpload}
+                disabled={!preview || preview.length === 0 || loading || disabled}
+              >
+                {loading ? (
+                  <>
+                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    Subiendo...
+                  </>
+                ) : (
+                  <>
+                    <i className="fas fa-cloud-upload-alt me-2"></i>
+                    Cargar Usuarios
+                  </>
+                )}
+              </button>
             </div>
           </div>
         </div>

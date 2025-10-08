@@ -415,11 +415,11 @@ def get_orders():
 
         # Query with join to include user information
         query = Order.query.join(User)
-        
+
         # Apply user_id filter if provided
         if user_id:
             query = query.filter(Order.user_id == user_id)
-        
+
         # Order by created_at descending and paginate
         orders_pagination = query.order_by(Order.created_at.desc()).paginate(
             page=page,

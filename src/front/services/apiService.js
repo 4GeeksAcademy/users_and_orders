@@ -1,7 +1,15 @@
-// Servicio centralizado para todas las llamadas al backend
+/**
+ * Servicio centralizado para comunicación con la API
+ * Gestiona todas las peticiones HTTP al backend
+ */
+
 const API_BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
-// Función auxiliar para manejar respuestas de la API
+// ============== UTILIDADES ==============
+
+/**
+ * Procesa la respuesta de la API y maneja errores
+ */
 const handleResponse = async (response) => {
   const data = await response.json();
   if (!response.ok) {
@@ -10,7 +18,9 @@ const handleResponse = async (response) => {
   return data;
 };
 
-// Función auxiliar para hacer peticiones
+/**
+ * Realiza peticiones HTTP a la API
+ */
 const request = async (endpoint, options = {}) => {
   try {
     if (!API_BASE_URL) {
@@ -33,157 +43,94 @@ const request = async (endpoint, options = {}) => {
   }
 };
 
-// Función auxiliar para construir query strings
+/**
+ * Construye query string a partir de un objeto de parámetros
+ */
 const buildQueryString = (params) => {
   const query = new URLSearchParams();
   Object.entries(params).forEach(([key, value]) => {
-    if (value !== undefined && value !== null) {
+    if (value !== undefined && value !== null && value !== "") {
       query.append(key, value);
     }
   });
   return query.toString() ? `?${query.toString()}` : "";
 };
 
-// ========== API Service ==========
+// ============== API SERVICE ==============
+
 export const apiService = {
-  // ========== Test de conexión ==========
+  // Endpoint de prueba
   hello: () => request("/api/hello"),
 
   // ========== USUARIOS ==========
   users: {
-    /**
-     * Listar todos los usuarios con paginación opcional
-     * @param {Object} params - Parámetros de paginación y búsqueda
-     * @param {number} params.page - Número de página (default: 1)
-     * @param {number} params.per_page - Elementos por página (default: 10, max: 100)
-     * @param {string} params.search - Término de búsqueda por nombre o email
-     * @returns {Promise} - { users: [], total, page, per_page, total_pages, search }
-     */
+    // Obtener lista de usuarios (con paginación y búsqueda)
     getAll: (params = {}) => {
       const queryString = buildQueryString(params);
       return request(`/api/users${queryString}`);
     },
 
-    /**
-     * Crear un nuevo usuario
-     * @param {Object} userData - Datos del usuario
-     * @param {string} userData.name - Nombre del usuario (requerido)
-     * @param {string} userData.email - Email del usuario (requerido, único, formato válido)
-     * @returns {Promise} - Usuario creado
-     */
+    // Crear un usuario
     create: (userData) =>
       request("/api/users", {
         method: "POST",
         body: JSON.stringify(userData),
       }),
 
-    /**
-     * Actualizar un usuario existente
-     * @param {number} userId - ID del usuario
-     * @param {Object} userData - Datos a actualizar
-     * @param {string} userData.name - Nombre del usuario (opcional)
-     * @param {string} userData.email - Email del usuario (opcional)
-     * @returns {Promise} - Usuario actualizado
-     */
+    // Actualizar un usuario
     update: (userId, userData) =>
       request(`/api/users/${userId}`, {
         method: "PUT",
         body: JSON.stringify(userData),
       }),
 
-    /**
-     * Eliminar un usuario (solo si no tiene pedidos)
-     * @param {number} userId - ID del usuario
-     * @returns {Promise} - { success, message }
-     */
+    // Eliminar un usuario (solo si no tiene pedidos)
     delete: (userId) =>
       request(`/api/users/${userId}`, {
         method: "DELETE",
       }),
 
-    /**
-     * Crear múltiples usuarios en lote desde JSON
-     * @param {Object} batchData - Datos del lote
-     * @param {Array} batchData.users - Array de objetos con { name, email }
-     * @returns {Promise} - { success, created, failed, total_processed, users: [], errors?: [] }
-     * @note Máximo 1000 usuarios por lote
-     */
+    // Crear usuarios en lote
     batchCreate: (batchData) =>
       request("/api/users/batch", {
         method: "POST",
         body: JSON.stringify(batchData),
       }),
 
-    /**
-     * Obtener todos los pedidos de un usuario específico
-     * @param {number} userId - ID del usuario
-     * @returns {Promise} - { user, orders: [], total_orders }
-     */
+    // Obtener pedidos de un usuario
     getOrders: (userId) => request(`/api/users/${userId}/orders`),
 
-    /**
-     * Exportar todos los usuarios a JSON
-     * @returns {Promise} - { success, total, users: [], exported_at }
-     */
+    // Exportar usuarios a JSON
     export: () => request("/api/users/export"),
   },
 
   // ========== PEDIDOS ==========
   orders: {
-    /**
-     * Listar todos los pedidos con información del usuario
-     * @param {Object} params - Parámetros de paginación y búsqueda
-     * @param {number} params.page - Número de página (default: 1)
-     * @param {number} params.per_page - Elementos por página (default: 10, max: 100)
-     * @param {string} params.search - Término de búsqueda por nombre de producto
-     * @returns {Promise} - { orders: [], total, page, per_page, total_pages, search }
-     */
+    // Obtener lista de pedidos (con paginación y búsqueda)
     getAll: (params = {}) => {
       const queryString = buildQueryString(params);
       return request(`/api/orders${queryString}`);
     },
 
-    /**
-     * Crear un nuevo pedido
-     * @param {Object} orderData - Datos del pedido
-     * @param {number} orderData.user_id - ID del usuario (requerido)
-     * @param {string} orderData.product_name - Nombre del producto (requerido)
-     * @param {number} orderData.amount - Cantidad (requerido, debe ser > 0)
-     * @returns {Promise} - Pedido creado
-     */
+    // Crear un pedido
     create: (orderData) =>
       request("/api/orders", {
         method: "POST",
         body: JSON.stringify(orderData),
       }),
 
-    /**
-     * Actualizar el estado de un pedido
-     * @param {number} orderId - ID del pedido
-     * @param {string} status - Nuevo estado (pending, completed, cancelled)
-     * @returns {Promise} - Pedido actualizado
-     */
+    // Actualizar estado de un pedido
     updateStatus: (orderId, status) =>
       request(`/api/orders/${orderId}`, {
         method: "PATCH",
         body: JSON.stringify({ status }),
       }),
 
-    /**
-     * Exportar todos los pedidos a JSON (con filtros opcionales)
-     * @param {Object} params - Parámetros de filtro opcionales (ej: { user_id: 5 })
-     * @returns {Promise} - { success, total, orders: [], exported_at }
-     */
+    // Exportar pedidos a JSON (con filtros opcionales)
     export: (params = {}) =>
       request(`/api/orders/export${buildQueryString(params)}`),
 
-    /**
-     * Crear múltiples pedidos en lote desde JSON
-     * @param {Object} batchData - Datos del lote
-     * @param {Array} batchData.orders - Array de objetos con { user_id, product_name, amount }
-     * @returns {Promise} - { success, created, failed, total_processed, orders: [], errors?: [] }
-     * @note Máximo 1000 pedidos por lote
-     */
+    // Crear pedidos en lote
     batchCreate: (batchData) =>
       request("/api/orders/batch", {
         method: "POST",

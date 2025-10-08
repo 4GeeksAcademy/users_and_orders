@@ -2,9 +2,8 @@ import { useState, useEffect } from "react";
 import apiService from "../services/apiService";
 
 /**
- * Hook personalizado para gestionar pedidos
- * Maneja el estado de pedidos, loading, errores y paginación
- * @param {Object} initialFilters - Filtros iniciales opcionales (ej: { user_id: 1 })
+ * Hook personalizado para gestión de pedidos
+ * Maneja estado, paginación, filtros y operaciones CRUD de pedidos
  */
 export const useOrders = (initialFilters = {}) => {
   const [orders, setOrders] = useState([]);
@@ -20,7 +19,7 @@ export const useOrders = (initialFilters = {}) => {
   });
 
   /**
-   * Obtener todos los pedidos con paginación y filtros
+   * Obtiene pedidos con paginación y filtros aplicados
    */
   const fetchOrders = async (
     page = 1,
@@ -32,15 +31,8 @@ export const useOrders = (initialFilters = {}) => {
     setError(null);
 
     try {
-      const params = {
-        page,
-        per_page,
-        ...currentFilters, // Incluir filtros en los parámetros
-      };
-
-      if (search) {
-        params.search = search;
-      }
+      const params = { page, per_page, ...currentFilters };
+      if (search) params.search = search;
 
       const response = await apiService.orders.getAll(params);
       setOrders(response.orders);
@@ -59,34 +51,34 @@ export const useOrders = (initialFilters = {}) => {
   };
 
   /**
-   * Aplicar nuevos filtros
+   * Aplica nuevos filtros y reinicia la paginación
    */
   const applyFilters = (newFilters) => {
     setFilters(newFilters);
-    setPagination({ ...pagination, page: 1 }); // Resetear a página 1
+    setPagination((prev) => ({ ...prev, page: 1 }));
     fetchOrders(1, pagination.per_page, newFilters, searchTerm);
   };
 
   /**
-   * Limpiar filtros
+   * Limpia todos los filtros aplicados
    */
   const clearFilters = () => {
     setFilters({});
-    setPagination({ ...pagination, page: 1 });
+    setPagination((prev) => ({ ...prev, page: 1 }));
     fetchOrders(1, pagination.per_page, {}, searchTerm);
   };
 
   /**
-   * Buscar pedidos por nombre de producto
+   * Busca pedidos por nombre de producto
    */
   const searchOrders = (search) => {
     setSearchTerm(search);
-    setPagination({ ...pagination, page: 1 });
+    setPagination((prev) => ({ ...prev, page: 1 }));
     fetchOrders(1, pagination.per_page, filters, search);
   };
 
   /**
-   * Limpiar búsqueda
+   * Limpia el término de búsqueda
    */
   const clearSearch = () => {
     setSearchTerm("");
@@ -94,7 +86,7 @@ export const useOrders = (initialFilters = {}) => {
   };
 
   /**
-   * Crear un nuevo pedido
+   * Crea un nuevo pedido y recarga la lista
    */
   const createOrder = async (orderData) => {
     setLoading(true);
@@ -102,7 +94,6 @@ export const useOrders = (initialFilters = {}) => {
 
     try {
       const newOrder = await apiService.orders.create(orderData);
-      // Recargar la lista de pedidos después de crear uno nuevo
       await fetchOrders(
         pagination.page,
         pagination.per_page,
@@ -120,37 +111,31 @@ export const useOrders = (initialFilters = {}) => {
   };
 
   /**
-   * Exportar pedidos a JSON (respeta filtros activos)
+   * Exporta pedidos a JSON respetando los filtros activos
    */
   const exportOrders = async () => {
     setLoading(true);
     setError(null);
 
     try {
-      // Pasar los filtros activos al exportar
       const response = await apiService.orders.export(filters);
 
-      // Crear un archivo JSON para descargar
-      const dataStr = JSON.stringify(response.orders, null, 2);
-      const dataBlob = new Blob([dataStr], { type: "application/json" });
-      const url = URL.createObjectURL(dataBlob);
-
-      // Nombre del archivo dinámico según filtros
+      // Generar nombre de archivo dinámico
       let fileName = `orders_export_${new Date().toISOString().split("T")[0]}`;
-      if (filters.user_id) {
-        fileName += `_user_${filters.user_id}`;
-      }
+      if (filters.user_id) fileName += `_user_${filters.user_id}`;
       fileName += ".json";
 
-      // Crear enlace de descarga
+      // Crear y descargar archivo
+      const dataBlob = new Blob([JSON.stringify(response.orders, null, 2)], {
+        type: "application/json",
+      });
+      const url = URL.createObjectURL(dataBlob);
       const link = document.createElement("a");
       link.href = url;
       link.download = fileName;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-
-      // Limpiar URL
       URL.revokeObjectURL(url);
 
       return response;
@@ -164,7 +149,7 @@ export const useOrders = (initialFilters = {}) => {
   };
 
   /**
-   * Crear múltiples pedidos desde un archivo JSON
+   * Crea múltiples pedidos en lote
    */
   const batchCreateOrders = async (ordersData) => {
     setLoading(true);
@@ -174,15 +159,12 @@ export const useOrders = (initialFilters = {}) => {
       const response = await apiService.orders.batchCreate({
         orders: ordersData,
       });
-
-      // Recargar la lista después de la carga masiva
       await fetchOrders(
         pagination.page,
         pagination.per_page,
         filters,
         searchTerm
       );
-
       return response;
     } catch (err) {
       setError(err.message || "Error en la carga masiva de pedidos");
@@ -194,7 +176,7 @@ export const useOrders = (initialFilters = {}) => {
   };
 
   /**
-   * Actualizar el estado de un pedido
+   * Actualiza el estado de un pedido
    */
   const updateOrderStatus = async (orderId, newStatus) => {
     setLoading(true);
@@ -205,15 +187,12 @@ export const useOrders = (initialFilters = {}) => {
         orderId,
         newStatus
       );
-
-      // Recargar la lista de pedidos después de actualizar
       await fetchOrders(
         pagination.page,
         pagination.per_page,
         filters,
         searchTerm
       );
-
       return updatedOrder;
     } catch (err) {
       setError(err.message || "Error al actualizar el estado del pedido");
@@ -225,7 +204,7 @@ export const useOrders = (initialFilters = {}) => {
   };
 
   /**
-   * Cambiar de página
+   * Cambia a una página específica
    */
   const changePage = (newPage) => {
     if (newPage >= 1 && newPage <= pagination.total_pages) {
@@ -234,13 +213,13 @@ export const useOrders = (initialFilters = {}) => {
   };
 
   /**
-   * Cambiar elementos por página
+   * Cambia la cantidad de elementos por página
    */
   const changePerPage = (newPerPage) => {
     fetchOrders(1, newPerPage, filters, searchTerm);
   };
 
-  // Cargar pedidos iniciales
+  // Cargar pedidos al montar el componente
   useEffect(() => {
     fetchOrders(1, pagination.per_page, filters, searchTerm);
   }, []);

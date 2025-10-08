@@ -1,15 +1,17 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./UserTable.css";
 
 /**
  * Componente de tabla de usuarios
  * @param {Array} users - Lista de usuarios a mostrar
- * @param {Function} onViewOrders - Función a ejecutar al hacer click en "Ver Pedidos"
+ * @param {Function} onViewOrders - Función a ejecutar al hacer click en "Ver Pedidos" (DEPRECATED - ahora usa navegación)
  * @param {Function} onEdit - Función a ejecutar al hacer click en "Editar"
  * @param {Function} onDelete - Función a ejecutar al hacer click en "Eliminar"
  * @param {boolean} loading - Estado de carga
  */
 export const UserTable = ({ users, onViewOrders, onEdit, onDelete, loading = false }) => {
+    const navigate = useNavigate();
     const [selectedUser, setSelectedUser] = useState(null);
     const [showTooltip, setShowTooltip] = useState(null);
     const [userToDelete, setUserToDelete] = useState(null);
@@ -24,6 +26,11 @@ export const UserTable = ({ users, onViewOrders, onEdit, onDelete, loading = fal
             hour: '2-digit',
             minute: '2-digit'
         });
+    };
+
+    // Manejar navegación a pedidos del usuario
+    const handleViewOrders = (userId, userName) => {
+        navigate(`/orders?user_id=${userId}&user_name=${encodeURIComponent(userName)}`);
     };
 
     // Manejar click en el nombre del usuario
@@ -117,7 +124,7 @@ export const UserTable = ({ users, onViewOrders, onEdit, onDelete, loading = fal
                                     <div className="btn-group" role="group">
                                         <button
                                             className="btn btn-sm btn-outline-primary"
-                                            onClick={() => onViewOrders(user.id, user.name)}
+                                            onClick={() => handleViewOrders(user.id, user.name)}
                                             title={`Ver pedidos de ${user.name}`}
                                         >
                                             <i className="fas fa-shopping-cart me-1"></i>

@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import "./Orders.css";
 import { useOrders } from "../hooks/useOrders";
 import { OrderForm } from "../components/OrderForm";
@@ -7,21 +8,44 @@ import { OrderBatchUpload } from "../components/OrderBatchUpload";
 import { Pagination } from "../components/Pagination";
 
 export const Orders = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const userId = searchParams.get('user_id');
+  const userName = searchParams.get('user_name');
+
   const {
     orders,
     loading,
     error,
     pagination,
+    filters,
     createOrder,
     exportOrders,
     batchCreateOrders,
     updateOrderStatus,
     changePage,
     changePerPage,
-  } = useOrders();
+    applyFilters,
+    clearFilters,
+  } = useOrders(userId ? { user_id: userId } : {});
 
   const [successMessage, setSuccessMessage] = useState("");
   const [showBatchUpload, setShowBatchUpload] = useState(false);
+
+  // Aplicar filtro cuando cambie el parámetro de URL
+  useEffect(() => {
+    if (userId) {
+      applyFilters({ user_id: userId });
+    } else if (filters.user_id) {
+      // Si no hay userId en la URL pero sí en los filtros, limpiar
+      clearFilters();
+    }
+  }, [userId]);
+
+  // Limpiar filtro
+  const handleClearFilter = () => {
+    clearFilters();
+    setSearchParams({}); // Limpiar URL
+  };
 
   // Manejar creación de pedido
   const handleOrderCreated = async (orderData) => {
@@ -74,6 +98,23 @@ export const Orders = () => {
 
   return (
     <div className="orders-container container mt-5">
+      {/* Banner de filtro activo */}
+      {userId && (
+        <div className="alert alert-info d-flex justify-content-between align-items-center mb-4">
+          <span>
+            <i className="fas fa-filter me-2"></i>
+            Mostrando pedidos de: <strong>{userName || `Usuario #${userId}`}</strong>
+          </span>
+          <button
+            className="btn btn-sm btn-outline-secondary"
+            onClick={handleClearFilter}
+          >
+            <i className="fas fa-times me-1"></i>
+            Ver todos los pedidos
+          </button>
+        </div>
+      )}
+
       <div className="row">
         {/* Formulario de creación de pedidos */}
         <div className="col-lg-4 mb-4">

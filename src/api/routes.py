@@ -405,6 +405,7 @@ def get_orders():
         # Optional pagination
         page = request.args.get('page', 1, type=int)
         per_page = request.args.get('per_page', 10, type=int)
+        user_id = request.args.get('user_id', type=int)  # Optional filter
 
         # Validate pagination parameters
         if page < 1:
@@ -413,7 +414,14 @@ def get_orders():
             return jsonify({"error": "Per page must be between 1 and 100"}), 400
 
         # Query with join to include user information
-        orders_pagination = Order.query.join(User).paginate(
+        query = Order.query.join(User)
+        
+        # Apply user_id filter if provided
+        if user_id:
+            query = query.filter(Order.user_id == user_id)
+        
+        # Order by created_at descending and paginate
+        orders_pagination = query.order_by(Order.created_at.desc()).paginate(
             page=page,
             per_page=per_page,
             error_out=False

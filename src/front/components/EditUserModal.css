@@ -1,16 +1,24 @@
-/* Estilos para el modal de edición de usuario */
+/**
+ * Estilos para EditUserModal
+ * 
+ * Arquitectura de componente modal siguiendo principios de:
+ * - Capas z-index semánticas (overlay: 1040, modal: 1050)
+ * - Animaciones performantes (GPU-accelerated transforms)
+ * - Diseño mobile-first responsive
+ */
 
+/* === CAPA DE OVERLAY === */
+/* Backdrop semitransparente con z-index inferior al modal */
 .modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0; /* Shorthand para top, right, bottom, left: 0 */
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 1040;
   animation: fadeIn 0.3s ease-in-out;
 }
 
+/* === CONTENEDOR PRINCIPAL DEL MODAL === */
+/* Centrado absoluto con transform (mejor performance que margin auto) */
 .edit-user-modal {
   position: fixed;
   top: 50%;
@@ -25,6 +33,8 @@
   animation: slideDown 0.3s ease-in-out;
 }
 
+/* === HEADER DEL MODAL === */
+/* Flexbox para alineación de título y botón de cierre */
 .edit-user-modal .modal-header {
   display: flex;
   justify-content: space-between;
@@ -44,6 +54,7 @@
   align-items: center;
 }
 
+/* Botón de cierre circular con efecto hover */
 .edit-user-modal .btn-close {
   background: none;
   border: none;
@@ -69,10 +80,13 @@
   cursor: not-allowed;
 }
 
+/* === BODY DEL MODAL === */
 .edit-user-modal .modal-body {
   padding: 2rem;
 }
 
+/* === FORMULARIO === */
+/* Form group con spacing vertical consistente */
 .edit-user-modal .form-group {
   margin-bottom: 1.5rem;
 }
@@ -89,6 +103,7 @@
   font-size: 0.95rem;
 }
 
+/* Input con estados: default, focus, disabled, invalid */
 .edit-user-modal .form-control {
   display: block;
   width: 100%;
@@ -114,6 +129,7 @@
   cursor: not-allowed;
 }
 
+/* Estado de error con borde rojo y shadow personalizado */
 .edit-user-modal .form-control.is-invalid {
   border-color: #ef4444;
 }
@@ -123,6 +139,7 @@
   box-shadow: 0 0 0 0.2rem rgba(239, 68, 68, 0.25);
 }
 
+/* Mensaje de error debajo del input */
 .edit-user-modal .invalid-feedback {
   display: block;
   margin-top: 0.25rem;
@@ -130,6 +147,7 @@
   color: #ef4444;
 }
 
+/* === FOOTER DEL MODAL === */
 .edit-user-modal .modal-footer {
   display: flex;
   justify-content: flex-end;
@@ -140,6 +158,8 @@
   border-radius: 0 0 12px 12px;
 }
 
+/* === BOTONES === */
+/* Base común para botones con transiciones smooth */
 .edit-user-modal .btn {
   padding: 0.75rem 1.5rem;
   font-size: 1rem;
@@ -158,6 +178,7 @@
   cursor: not-allowed;
 }
 
+/* Botón secundario (Cancelar) */
 .edit-user-modal .btn-secondary {
   background-color: #64748b;
   color: white;
@@ -169,6 +190,7 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
+/* Botón primario (Guardar) */
 .edit-user-modal .btn-primary {
   background: #3b82f6;
   color: white;
@@ -180,13 +202,15 @@
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
 }
 
+/* Spinner de loading dentro del botón */
 .edit-user-modal .spinner-border-sm {
   width: 1rem;
   height: 1rem;
   border-width: 0.15em;
 }
 
-/* Animaciones */
+/* === ANIMACIONES === */
+/* Fade in para overlay con aceleración GPU */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -196,6 +220,7 @@
   }
 }
 
+/* Slide down para modal con transform (GPU-accelerated) */
 @keyframes slideDown {
   from {
     opacity: 0;
@@ -207,11 +232,11 @@
   }
 }
 
-/* Responsive */
+/* === RESPONSIVE === */
+/* Breakpoint mobile: full-width modal y stack vertical de botones */
 @media (max-width: 576px) {
   .edit-user-modal {
     width: 95%;
-    max-width: none;
   }
 
   .edit-user-modal .modal-header,

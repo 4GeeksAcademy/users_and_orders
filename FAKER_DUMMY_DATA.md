@@ -17,6 +17,7 @@ El componente de carga masiva de usuarios ahora incluye botones para generar dat
 - **Generar 100 usuarios**: Pruebas de carga considerable
 
 #### Datos Generados para Usuarios:
+
 - **name**: Nombres completos realistas (ej: "John Doe", "Jane Smith")
 - **email**: Emails válidos y únicos (ej: "john.doe@example.com")
 
@@ -31,6 +32,7 @@ El componente de carga masiva de pedidos también incluye generación de datos d
 - **Generar 250 pedidos**
 
 #### Datos Generados para Pedidos:
+
 - **user_id**: IDs de usuarios existentes en la base de datos
 - **product_name**: Nombres de productos realistas del catálogo de Faker Commerce
 - **amount**: Cantidades aleatorias entre 1 y 20 unidades
@@ -67,33 +69,36 @@ npm install @faker-js/faker --save-dev
 ### Integración en el Código
 
 #### UserBatchUpload.jsx
+
 ```javascript
-import { faker } from '@faker-js/faker';
+import { faker } from "@faker-js/faker";
 
 const handleGenerateDummyData = (count = 10) => {
   const dummyUsers = Array.from({ length: count }, () => ({
     name: faker.person.fullName(),
-    email: faker.internet.email().toLowerCase()
+    email: faker.internet.email().toLowerCase(),
   }));
-  
+
   validateUsers(dummyUsers);
   setPreview(dummyUsers);
 };
 ```
 
 #### OrderBatchUpload.jsx
+
 ```javascript
-import { faker } from '@faker-js/faker';
+import { faker } from "@faker-js/faker";
 
 const handleGenerateDummyData = (count = 10) => {
-  const userIds = availableUserIds.length > 0 ? availableUserIds : [1, 2, 3, 4, 5];
-  
+  const userIds =
+    availableUserIds.length > 0 ? availableUserIds : [1, 2, 3, 4, 5];
+
   const dummyOrders = Array.from({ length: count }, () => ({
     user_id: faker.helpers.arrayElement(userIds),
     product_name: faker.commerce.productName(),
-    amount: faker.number.int({ min: 1, max: 20 })
+    amount: faker.number.int({ min: 1, max: 20 }),
   }));
-  
+
   validateOrders(dummyOrders);
   setPreview(dummyOrders);
 };
@@ -110,6 +115,7 @@ const handleGenerateDummyData = (count = 10) => {
 ## 📊 Ejemplos de Datos Generados
 
 ### Usuarios de Ejemplo:
+
 ```json
 [
   {
@@ -128,6 +134,7 @@ const handleGenerateDummyData = (count = 10) => {
 ```
 
 ### Pedidos de Ejemplo:
+
 ```json
 [
   {
@@ -186,4 +193,4 @@ Todos los datos generados pasan por las mismas validaciones que los datos cargad
 
 ---
 
-**Nota**: Esta funcionalidad cumple con el punto extra de la prueba técnica: *"Uso de data dummy con librerías como faker o mockaroo para generar datos de prueba."*
+**Nota**: Esta funcionalidad cumple con el punto extra de la prueba técnica: _"Uso de data dummy con librerías como faker o mockaroo para generar datos de prueba."_

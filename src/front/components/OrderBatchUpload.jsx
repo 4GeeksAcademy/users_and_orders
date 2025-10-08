@@ -157,7 +157,7 @@ export const OrderBatchUpload = ({ show, onClose, onBatchUpload, disabled = fals
         try {
             // Si no hay usuarios disponibles, usar IDs de ejemplo
             const userIds = availableUserIds.length > 0 ? availableUserIds : [1, 2, 3, 4, 5];
-            
+
             // Lista de productos realistas
             const productCategories = [
                 () => faker.commerce.productName(),
@@ -177,15 +177,15 @@ export const OrderBatchUpload = ({ show, onClose, onBatchUpload, disabled = fals
 
             // Validar los datos generados
             validateOrders(dummyOrders);
-            
+
             // Establecer el preview con los datos generados
             setPreview(dummyOrders);
             setError(null);
             setUploadResult(null);
-            
+
             // Crear un "archivo virtual" para mantener consistencia
             setFile({ name: `pedidos_dummy_${count}.json`, type: 'application/json' });
-            
+
         } catch (err) {
             setError(`Error al generar datos dummy: ${err.message}`);
         }

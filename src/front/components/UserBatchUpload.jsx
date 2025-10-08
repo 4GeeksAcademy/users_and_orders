@@ -173,15 +173,15 @@ export const UserBatchUpload = ({ show, onClose, onUploadSuccess, disabled = fal
 
       // Validar los datos generados
       validateUsers(dummyUsers);
-      
+
       // Establecer el preview con los datos generados
       setPreview(dummyUsers);
       setError(null);
       setResult(null);
-      
+
       // Crear un "archivo virtual" para mantener consistencia
       setFile({ name: `usuarios_dummy_${count}.json`, type: 'application/json' });
-      
+
     } catch (err) {
       setError(`Error al generar datos dummy: ${err.message}`);
     }

@@ -7,11 +7,13 @@ import { OrderForm } from "../components/OrderForm";
 import { OrderTable } from "../components/OrderTable";
 import { OrderBatchUpload } from "../components/OrderBatchUpload";
 import { Pagination } from "../components/Pagination";
+import apiService from "../services/apiService";
 
 export const Orders = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const userId = searchParams.get('user_id');
   const userName = searchParams.get('user_name');
+  const [availableUserIds, setAvailableUserIds] = useState([]);
 
   const {
     orders,
@@ -37,6 +39,23 @@ export const Orders = () => {
 
   const [successMessage, setSuccessMessage] = useState("");
   const [showBatchUpload, setShowBatchUpload] = useState(false);
+
+  // Cargar usuarios disponibles para datos dummy
+  useEffect(() => {
+    const fetchAvailableUsers = async () => {
+      try {
+        const response = await apiService.users.getAll({ per_page: 1000 });
+        const userIds = response.users.map(user => user.id);
+        setAvailableUserIds(userIds);
+      } catch (error) {
+        console.error("Error fetching users for dummy data:", error);
+      }
+    };
+    
+    if (showBatchUpload) {
+      fetchAvailableUsers();
+    }
+  }, [showBatchUpload]);
 
   // Registrar funciones de búsqueda cuando el componente se monta
   useEffect(() => {
@@ -240,6 +259,7 @@ export const Orders = () => {
         onClose={() => setShowBatchUpload(false)}
         onBatchUpload={handleBatchUpload}
         disabled={loading}
+        availableUserIds={availableUserIds}
       />
     </div>
   );

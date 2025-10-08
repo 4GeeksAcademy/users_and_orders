@@ -43,9 +43,9 @@ export const Navbar = () => {
 	// Determinar el placeholder según la ruta actual
 	const getPlaceholder = () => {
 		if (location.pathname === "/users") {
-			return "Buscar por nombre o email...";
+			return "Nombre o email...";
 		} else if (location.pathname === "/orders") {
-			return "Buscar por producto...";
+			return "Producto...";
 		}
 		return "Buscar...";
 	};

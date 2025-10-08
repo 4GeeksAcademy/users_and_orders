@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import { faker } from '@faker-js/faker';
 
 /**
  * Componente para carga masiva de usuarios desde archivo JSON con Modal
@@ -161,6 +162,31 @@ export const UserBatchUpload = ({ show, onClose, onUploadSuccess, disabled = fal
     URL.revokeObjectURL(url);
   };
 
+  // Generar datos dummy con Faker
+  const handleGenerateDummyData = (count = 10) => {
+    try {
+      // Generar usuarios con datos realistas usando Faker
+      const dummyUsers = Array.from({ length: count }, () => ({
+        name: faker.person.fullName(),
+        email: faker.internet.email().toLowerCase()
+      }));
+
+      // Validar los datos generados
+      validateUsers(dummyUsers);
+      
+      // Establecer el preview con los datos generados
+      setPreview(dummyUsers);
+      setError(null);
+      setResult(null);
+      
+      // Crear un "archivo virtual" para mantener consistencia
+      setFile({ name: `usuarios_dummy_${count}.json`, type: 'application/json' });
+      
+    } catch (err) {
+      setError(`Error al generar datos dummy: ${err.message}`);
+    }
+  };
+
   return (
     <>
       {/* Backdrop del modal */}
@@ -203,6 +229,68 @@ export const UserBatchUpload = ({ show, onClose, onUploadSuccess, disabled = fal
                     <li>Cada usuario debe tener: <code>name</code> (texto), <code>email</code> (texto válido)</li>
                     <li>Máximo 1000 usuarios por carga</li>
                   </ul>
+                </div>
+
+                {/* Generación de Datos Dummy */}
+                <div className="card mb-3 border-warning">
+                  <div className="card-header bg-warning bg-opacity-10">
+                    <h6 className="mb-0">
+                      <i className="fas fa-magic me-2"></i>
+                      Generar Datos de Prueba (Faker)
+                    </h6>
+                  </div>
+                  <div className="card-body">
+                    <p className="text-muted small mb-2">
+                      Genera usuarios de prueba con datos realistas usando la librería Faker.
+                    </p>
+                    <div className="d-flex gap-2 flex-wrap">
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-outline-warning"
+                        onClick={() => handleGenerateDummyData(5)}
+                        disabled={loading || disabled}
+                      >
+                        <i className="fas fa-users me-1"></i>
+                        Generar 5
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-outline-warning"
+                        onClick={() => handleGenerateDummyData(10)}
+                        disabled={loading || disabled}
+                      >
+                        <i className="fas fa-users me-1"></i>
+                        Generar 10
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-outline-warning"
+                        onClick={() => handleGenerateDummyData(25)}
+                        disabled={loading || disabled}
+                      >
+                        <i className="fas fa-users me-1"></i>
+                        Generar 25
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-outline-warning"
+                        onClick={() => handleGenerateDummyData(50)}
+                        disabled={loading || disabled}
+                      >
+                        <i className="fas fa-users me-1"></i>
+                        Generar 50
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-outline-warning"
+                        onClick={() => handleGenerateDummyData(100)}
+                        disabled={loading || disabled}
+                      >
+                        <i className="fas fa-users me-1"></i>
+                        Generar 100
+                      </button>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Selector de archivo */}

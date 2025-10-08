@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import { faker } from '@faker-js/faker';
 
 /**
  * Componente para carga masiva de pedidos desde archivo JSON con Modal
@@ -6,8 +7,9 @@ import React, { useState, useRef } from "react";
  * @param {Function} onClose - Función para cerrar el modal
  * @param {Function} onBatchUpload - Función a ejecutar cuando la carga sea exitosa
  * @param {boolean} disabled - Deshabilitar el componente
+ * @param {Array} availableUserIds - IDs de usuarios disponibles para generar datos dummy
  */
-export const OrderBatchUpload = ({ show, onClose, onBatchUpload, disabled = false }) => {
+export const OrderBatchUpload = ({ show, onClose, onBatchUpload, disabled = false, availableUserIds = [] }) => {
     const [file, setFile] = useState(null);
     const [preview, setPreview] = useState(null);
     const [isUploading, setIsUploading] = useState(false);
@@ -150,6 +152,45 @@ export const OrderBatchUpload = ({ show, onClose, onBatchUpload, disabled = fals
         URL.revokeObjectURL(url);
     };
 
+    // Generar datos dummy con Faker
+    const handleGenerateDummyData = (count = 10) => {
+        try {
+            // Si no hay usuarios disponibles, usar IDs de ejemplo
+            const userIds = availableUserIds.length > 0 ? availableUserIds : [1, 2, 3, 4, 5];
+            
+            // Lista de productos realistas
+            const productCategories = [
+                () => faker.commerce.productName(),
+                () => `${faker.commerce.productAdjective()} ${faker.commerce.product()}`,
+                () => faker.commerce.product(),
+            ];
+
+            // Generar pedidos con datos realistas usando Faker
+            const dummyOrders = Array.from({ length: count }, () => {
+                const productGenerator = faker.helpers.arrayElement(productCategories);
+                return {
+                    user_id: faker.helpers.arrayElement(userIds),
+                    product_name: productGenerator(),
+                    amount: faker.number.int({ min: 1, max: 20 })
+                };
+            });
+
+            // Validar los datos generados
+            validateOrders(dummyOrders);
+            
+            // Establecer el preview con los datos generados
+            setPreview(dummyOrders);
+            setError(null);
+            setUploadResult(null);
+            
+            // Crear un "archivo virtual" para mantener consistencia
+            setFile({ name: `pedidos_dummy_${count}.json`, type: 'application/json' });
+            
+        } catch (err) {
+            setError(`Error al generar datos dummy: ${err.message}`);
+        }
+    };
+
     const handleClose = () => {
         // Limpiar estados al cerrar
         setFile(null);
@@ -193,6 +234,73 @@ export const OrderBatchUpload = ({ show, onClose, onBatchUpload, disabled = fals
                                 <li>Cada pedido debe tener: <code>user_id</code> (número), <code>product_name</code> (texto), <code>amount</code> (número mayor a 0)</li>
                                 <li>Máximo 1000 pedidos por carga</li>
                             </ul>
+                        </div>
+
+                        {/* Generación de Datos Dummy */}
+                        <div className="card mb-3 border-warning">
+                            <div className="card-header bg-warning bg-opacity-10">
+                                <h6 className="mb-0">
+                                    <i className="fas fa-magic me-2"></i>
+                                    Generar Datos de Prueba (Faker)
+                                </h6>
+                            </div>
+                            <div className="card-body">
+                                <p className="text-muted small mb-2">
+                                    Genera pedidos de prueba con datos realistas usando la librería Faker.
+                                    {availableUserIds.length > 0 && (
+                                        <span className="text-success ms-1">
+                                            ({availableUserIds.length} usuario(s) disponible(s))
+                                        </span>
+                                    )}
+                                </p>
+                                <div className="d-flex gap-2 flex-wrap">
+                                    <button
+                                        type="button"
+                                        className="btn btn-sm btn-outline-warning"
+                                        onClick={() => handleGenerateDummyData(10)}
+                                        disabled={isUploading || disabled}
+                                    >
+                                        <i className="fas fa-shopping-cart me-1"></i>
+                                        Generar 10
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="btn btn-sm btn-outline-warning"
+                                        onClick={() => handleGenerateDummyData(25)}
+                                        disabled={isUploading || disabled}
+                                    >
+                                        <i className="fas fa-shopping-cart me-1"></i>
+                                        Generar 25
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="btn btn-sm btn-outline-warning"
+                                        onClick={() => handleGenerateDummyData(50)}
+                                        disabled={isUploading || disabled}
+                                    >
+                                        <i className="fas fa-shopping-cart me-1"></i>
+                                        Generar 50
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="btn btn-sm btn-outline-warning"
+                                        onClick={() => handleGenerateDummyData(100)}
+                                        disabled={isUploading || disabled}
+                                    >
+                                        <i className="fas fa-shopping-cart me-1"></i>
+                                        Generar 100
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="btn btn-sm btn-outline-warning"
+                                        onClick={() => handleGenerateDummyData(250)}
+                                        disabled={isUploading || disabled}
+                                    >
+                                        <i className="fas fa-shopping-cart me-1"></i>
+                                        Generar 250
+                                    </button>
+                                </div>
+                            </div>
                         </div>
 
                         {/* Mensajes de error */}

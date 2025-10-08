@@ -151,10 +151,10 @@ export const Users = () => {
         <div className="col-lg-4 mb-4">
           <div className="card users-card">
             <div className="card-header users-header text-white">
-              <h4 className="mb-0">
+              <h5 className="mb-0">
                 <i className="fas fa-user-plus me-2"></i>
                 Crear Usuario
-              </h4>
+              </h5>
             </div>
             <div className="card-body">
               {error && (

@@ -267,41 +267,147 @@ export const OrderBatchUpload = ({ show, onClose, onBatchUpload, disabled = fals
 
                         {/* Resultado de la carga */}
                         {uploadResult && (
-                            <div className={`alert ${uploadResult.created > 0 ? "alert-success" : "alert-warning"}`}>
-                                <h6 className="alert-heading">
-                                    <i className="fas fa-check-circle me-2"></i>
-                                    Resultado de la Carga
-                                </h6>
-                                <ul className="mb-0">
-                                    <li>
-                                        <strong>Total procesados:</strong> {uploadResult.total_processed}
-                                    </li>
-                                    <li>
-                                        <strong>Creados exitosamente:</strong> {uploadResult.created}
-                                    </li>
-                                    {uploadResult.failed > 0 && (
-                                        <li>
-                                            <strong>Fallidos:</strong> {uploadResult.failed}
-                                        </li>
-                                    )}
-                                </ul>
+                            <div className="batch-result-container">
+                                {/* Resumen General */}
+                                <div className={`alert ${uploadResult.created > 0 ? 'alert-success' : 'alert-warning'} mb-3`} role="alert">
+                                    <h6 className="alert-heading mb-3">
+                                        <i className={`fas ${uploadResult.created > 0 ? 'fa-check-circle' : 'fa-exclamation-circle'} me-2`}></i>
+                                        Resumen de la Carga
+                                    </h6>
+                                    <div className="row text-center">
+                                        <div className="col-4">
+                                            <div className="border rounded p-2 bg-light">
+                                                <h4 className="mb-0">{uploadResult.total_processed}</h4>
+                                                <small className="text-muted">Total Procesados</small>
+                                            </div>
+                                        </div>
+                                        <div className="col-4">
+                                            <div className="border rounded p-2 bg-success bg-opacity-10">
+                                                <h4 className="mb-0 text-success">{uploadResult.created}</h4>
+                                                <small className="text-success">Exitosos</small>
+                                            </div>
+                                        </div>
+                                        <div className="col-4">
+                                            <div className="border rounded p-2 bg-danger bg-opacity-10">
+                                                <h4 className="mb-0 text-danger">{uploadResult.failed}</h4>
+                                                <small className="text-danger">Fallidos</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
+                                {/* Lista de Pedidos Creados Exitosamente */}
+                                {uploadResult.orders && uploadResult.orders.length > 0 && (
+                                    <div className="card mb-3 border-success">
+                                        <div className="card-header bg-success bg-opacity-10 border-success">
+                                            <details>
+                                                <summary className="fw-bold text-success" style={{ cursor: 'pointer', listStyle: 'none' }}>
+                                                    <i className="fas fa-chevron-right me-2" style={{ fontSize: '0.8em' }}></i>
+                                                    <i className="fas fa-check-circle me-2"></i>
+                                                    Pedidos Creados Exitosamente ({uploadResult.orders.length})
+                                                </summary>
+                                                <div className="mt-3">
+                                                    <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                                                        <table className="table table-sm table-hover mb-0">
+                                                            <thead className="table-light sticky-top">
+                                                                <tr>
+                                                                    <th style={{ width: '60px' }}>ID</th>
+                                                                    <th style={{ width: '80px' }}>User ID</th>
+                                                                    <th>Producto</th>
+                                                                    <th style={{ width: '100px' }}>Cantidad</th>
+                                                                    <th style={{ width: '120px' }}>Estado</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                {uploadResult.orders.map((order, idx) => (
+                                                                    <tr key={order.id || idx}>
+                                                                        <td>
+                                                                            <span className="badge bg-primary">{order.id}</span>
+                                                                        </td>
+                                                                        <td>
+                                                                            <span className="badge bg-info">{order.user_id}</span>
+                                                                        </td>
+                                                                        <td>
+                                                                            <i className="fas fa-box text-success me-2"></i>
+                                                                            {order.product_name}
+                                                                        </td>
+                                                                        <td>
+                                                                            <i className="fas fa-hashtag text-muted me-1"></i>
+                                                                            <strong>{order.amount}</strong>
+                                                                        </td>
+                                                                        <td>
+                                                                            <span className="badge bg-success">
+                                                                                <i className="fas fa-check me-1"></i>
+                                                                                Creado
+                                                                            </span>
+                                                                        </td>
+                                                                    </tr>
+                                                                ))}
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </details>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Lista de Pedidos Fallidos */}
                                 {uploadResult.errors && uploadResult.errors.length > 0 && (
-                                    <details className="mt-2">
-                                        <summary className="cursor-pointer">
-                                            <i className="fas fa-chevron-right me-1"></i>
-                                            Ver errores ({uploadResult.errors.length})
-                                        </summary>
-                                        <ul className="mt-2 mb-0">
-                                            {uploadResult.errors.map((error, index) => (
-                                                <li key={index}>
-                                                    <small>
-                                                        Índice {error.index}: {error.error}
-                                                    </small>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </details>
+                                    <div className="card mb-3 border-danger">
+                                        <div className="card-header bg-danger bg-opacity-10 border-danger">
+                                            <details>
+                                                <summary className="fw-bold text-danger" style={{ cursor: 'pointer', listStyle: 'none' }}>
+                                                    <i className="fas fa-chevron-right me-2" style={{ fontSize: '0.8em' }}></i>
+                                                    <i className="fas fa-exclamation-triangle me-2"></i>
+                                                    Pedidos No Creados ({uploadResult.errors.length})
+                                                </summary>
+                                                <div className="mt-3">
+                                                    <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                                                        <table className="table table-sm table-hover mb-0">
+                                                            <thead className="table-light sticky-top">
+                                                                <tr>
+                                                                    <th style={{ width: '60px' }}>Índice</th>
+                                                                    <th style={{ width: '80px' }}>User ID</th>
+                                                                    <th>Producto</th>
+                                                                    <th style={{ width: '100px' }}>Cantidad</th>
+                                                                    <th>Motivo del Error</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                {uploadResult.errors.map((err, idx) => (
+                                                                    <tr key={idx} className="table-danger table-danger-subtle">
+                                                                        <td>
+                                                                            <span className="badge bg-secondary">{err.index + 1}</span>
+                                                                        </td>
+                                                                        <td>
+                                                                            <span className="badge bg-secondary">{err.data?.user_id || 'N/A'}</span>
+                                                                        </td>
+                                                                        <td>
+                                                                            <i className="fas fa-box-open text-danger me-2"></i>
+                                                                            {err.data?.product_name || 'N/A'}
+                                                                        </td>
+                                                                        <td>
+                                                                            <i className="fas fa-hashtag text-muted me-1"></i>
+                                                                            {err.data?.amount || 'N/A'}
+                                                                        </td>
+                                                                        <td>
+                                                                            <div className="d-flex align-items-center">
+                                                                                <i className="fas fa-exclamation-circle text-danger me-2"></i>
+                                                                                <small className="text-danger">
+                                                                                    <strong>{err.error}</strong>
+                                                                                </small>
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                ))}
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </details>
+                                        </div>
+                                    </div>
                                 )}
                             </div>
                         )}

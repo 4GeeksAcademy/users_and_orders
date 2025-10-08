@@ -1,0 +1,77 @@
+[
+  {
+    "user_id": 1,
+    "product_name": "Laptop Deddll XPS 15",
+    "amount": 2
+  },
+  {
+    "user_id": 1,
+    "product_name": "Mouse Logitechdd MX Master",
+    "amount": 3
+  },
+  {
+    "user_id": 2,
+    "product_name": "Teclado Mecánddico RGB",
+    "amount": 1
+  },
+  {
+    "user_id": 2,
+    "product_name": "Monitor 27 pulgadas",
+    "amount": 2
+  },
+  {
+    "user_id": 3,
+    "product_name": "Webcam HDdd 1080p",
+    "amount": 5
+  },
+  {
+    "user_id": 3,
+    "product_name": "Auriculares Bluetooth",
+    "amount": 4
+  },
+  {
+    "user_id": 4,
+    "product_name": "SSD 1TB NVMe",
+    "amount": 3
+  },
+  {
+    "user_id": 5,
+    "product_name": "RAM 16GB DDR4",
+    "amount": 8
+  },
+  {
+    "user_id": 5,
+    "product_name": "Hub USB-C 7 puertos",
+    "amount": 2
+  },
+  {
+    "user_id": 6,
+    "product_name": "Micrófono condensador",
+    "amount": 1
+  },
+  {
+    "user_id": 7,
+    "product_name": "Tablet Android 10 pulgadas",
+    "amount": 3
+  },
+  {
+    "user_id": 8,
+    "product_name": "Router WiFi 6",
+    "amount": 2
+  },
+  {
+    "user_id": 9,
+    "product_name": "Impresora multifunción",
+    "amount": 1
+  },
+  {
+    "user_id": 10,
+    "product_name": "Cable HDMI 4K 2m",
+    "amount": 10
+  },
+  {
+    "user_id": 10,
+    "product_name": "Adaptador USB-C a HDMI",
+    "amount": 5
+  }
+]

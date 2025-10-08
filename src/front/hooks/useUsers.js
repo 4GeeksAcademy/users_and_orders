@@ -15,21 +15,28 @@ export const useUsers = (initialPage = 1, perPage = 10) => {
     total: 0,
     total_pages: 0,
   });
+  const [searchTerm, setSearchTerm] = useState("");
 
   // Estados de UI
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   // Función para obtener usuarios
-  const fetchUsers = async (page = 1) => {
+  const fetchUsers = async (page = 1, search = searchTerm) => {
     try {
       setLoading(true);
       setError(null);
 
-      const response = await apiService.users.getAll({
+      const params = {
         page: page,
         per_page: perPage,
-      });
+      };
+
+      if (search) {
+        params.search = search;
+      }
+
+      const response = await apiService.users.getAll(params);
 
       setUsers(response.users);
       setPagination({
@@ -97,8 +104,20 @@ export const useUsers = (initialPage = 1, perPage = 10) => {
   // Cambiar página
   const changePage = (newPage) => {
     if (newPage >= 1 && newPage <= pagination.total_pages) {
-      fetchUsers(newPage);
+      fetchUsers(newPage, searchTerm);
     }
+  };
+
+  // Función para buscar usuarios
+  const searchUsers = (search) => {
+    setSearchTerm(search);
+    fetchUsers(1, search); // Volver a página 1 con nueva búsqueda
+  };
+
+  // Limpiar búsqueda
+  const clearSearch = () => {
+    setSearchTerm("");
+    fetchUsers(1, "");
   };
 
   // Cargar usuarios al montar el componente
@@ -111,11 +130,14 @@ export const useUsers = (initialPage = 1, perPage = 10) => {
     pagination,
     loading,
     error,
+    searchTerm,
     fetchUsers,
     createUser,
     updateUser,
     deleteUser,
     changePage,
+    searchUsers,
+    clearSearch,
     setError,
   };
 };

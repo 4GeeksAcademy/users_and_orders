@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
+import { useSearch } from "../contexts/SearchContext";
 import "./Orders.css";
 import { useOrders } from "../hooks/useOrders";
 import { OrderForm } from "../components/OrderForm";
@@ -18,6 +19,7 @@ export const Orders = () => {
     error,
     pagination,
     filters,
+    searchTerm,
     createOrder,
     exportOrders,
     batchCreateOrders,
@@ -26,10 +28,23 @@ export const Orders = () => {
     changePerPage,
     applyFilters,
     clearFilters,
+    searchOrders,
+    clearSearch,
   } = useOrders(userId ? { user_id: userId } : {});
+
+  // Usar el contexto de búsqueda
+  const { registerSearch, unregisterSearch } = useSearch();
 
   const [successMessage, setSuccessMessage] = useState("");
   const [showBatchUpload, setShowBatchUpload] = useState(false);
+
+  // Registrar funciones de búsqueda cuando el componente se monta
+  useEffect(() => {
+    registerSearch(searchOrders, clearSearch);
+    return () => {
+      unregisterSearch();
+    };
+  }, [registerSearch, unregisterSearch, searchOrders, clearSearch]);
 
   // Aplicar filtro cuando cambie el parámetro de URL
   useEffect(() => {
@@ -111,6 +126,23 @@ export const Orders = () => {
           >
             <i className="fas fa-times me-1"></i>
             Ver todos los pedidos
+          </button>
+        </div>
+      )}
+
+      {/* Banner de búsqueda activa */}
+      {searchTerm && (
+        <div className="alert alert-info d-flex justify-content-between align-items-center mb-4">
+          <span>
+            <i className="fas fa-search me-2"></i>
+            Buscando: <strong>{searchTerm}</strong>
+          </span>
+          <button
+            className="btn btn-sm btn-outline-info"
+            onClick={clearSearch}
+          >
+            <i className="fas fa-times me-1"></i>
+            Limpiar búsqueda
           </button>
         </div>
       )}

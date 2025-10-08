@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUsers } from "../hooks/useUsers";
+import { useSearch } from "../contexts/SearchContext";
 import { UserForm } from "../components/UserForm";
 import { UserTable } from "../components/UserTable";
 import { EditUserModal } from "../components/EditUserModal";
@@ -13,7 +14,24 @@ export const Users = () => {
   const navigate = useNavigate();
 
   // Usar el hook personalizado para gestionar usuarios
-  const { users, pagination, loading, error, createUser, updateUser, deleteUser, changePage, setError, fetchUsers } = useUsers();
+  const {
+    users,
+    pagination,
+    loading,
+    error,
+    searchTerm,
+    createUser,
+    updateUser,
+    deleteUser,
+    changePage,
+    searchUsers,
+    clearSearch,
+    setError,
+    fetchUsers
+  } = useUsers();
+
+  // Usar el contexto de búsqueda
+  const { registerSearch, unregisterSearch } = useSearch();
 
   // Estados locales para el formulario
   const [formLoading, setFormLoading] = useState(false);
@@ -22,6 +40,14 @@ export const Users = () => {
   const [editingUser, setEditingUser] = useState(null);
   const [editLoading, setEditLoading] = useState(false);
   const [exportLoading, setExportLoading] = useState(false);
+
+  // Registrar funciones de búsqueda cuando el componente se monta
+  useEffect(() => {
+    registerSearch(searchUsers, clearSearch);
+    return () => {
+      unregisterSearch();
+    };
+  }, [registerSearch, unregisterSearch, searchUsers, clearSearch]);
 
   // Manejar envío del formulario
   const handleFormSubmit = async (formData) => {
@@ -240,6 +266,20 @@ export const Users = () => {
               </div>
             </div>
             <div className="card-body">
+              {searchTerm && (
+                <div className="alert alert-info d-flex justify-content-between align-items-center" role="alert">
+                  <span>
+                    <i className="fas fa-search me-2"></i>
+                    Buscando: <strong>{searchTerm}</strong>
+                  </span>
+                  <button
+                    className="btn btn-sm btn-outline-info"
+                    onClick={clearSearch}
+                  >
+                    Limpiar búsqueda
+                  </button>
+                </div>
+              )}
               <UserTable
                 users={users}
                 onViewOrders={handleViewOrders}

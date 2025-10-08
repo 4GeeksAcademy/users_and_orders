@@ -53,10 +53,11 @@ export const apiService = {
   users: {
     /**
      * Listar todos los usuarios con paginación opcional
-     * @param {Object} params - Parámetros de paginación
+     * @param {Object} params - Parámetros de paginación y búsqueda
      * @param {number} params.page - Número de página (default: 1)
      * @param {number} params.per_page - Elementos por página (default: 10, max: 100)
-     * @returns {Promise} - { users: [], total, page, per_page, total_pages }
+     * @param {string} params.search - Término de búsqueda por nombre o email
+     * @returns {Promise} - { users: [], total, page, per_page, total_pages, search }
      */
     getAll: (params = {}) => {
       const queryString = buildQueryString(params);
@@ -131,10 +132,11 @@ export const apiService = {
   orders: {
     /**
      * Listar todos los pedidos con información del usuario
-     * @param {Object} params - Parámetros de paginación
+     * @param {Object} params - Parámetros de paginación y búsqueda
      * @param {number} params.page - Número de página (default: 1)
      * @param {number} params.per_page - Elementos por página (default: 10, max: 100)
-     * @returns {Promise} - { orders: [], total, page, per_page, total_pages }
+     * @param {string} params.search - Término de búsqueda por nombre de producto
+     * @returns {Promise} - { orders: [], total, page, per_page, total_pages, search }
      */
     getAll: (params = {}) => {
       const queryString = buildQueryString(params);

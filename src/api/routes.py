@@ -73,11 +73,12 @@ def create_user():
 
 @api.route('/users', methods=['GET'])
 def get_users():
-    """Get all users with optional pagination"""
+    """Get all users with optional pagination and search"""
     try:
         # Optional pagination
         page = request.args.get('page', 1, type=int)
         per_page = request.args.get('per_page', 10, type=int)
+        search = request.args.get('search', '', type=str).strip()
 
         # Validate pagination parameters
         if page < 1:
@@ -85,8 +86,21 @@ def get_users():
         if per_page < 1 or per_page > 100:
             return jsonify({"error": "Per page must be between 1 and 100"}), 400
 
+        # Build query with optional search
+        query = User.query
+
+        if search:
+            # Search by name or email (case-insensitive)
+            search_pattern = f"%{search}%"
+            query = query.filter(
+                db.or_(
+                    User.name.ilike(search_pattern),
+                    User.email.ilike(search_pattern)
+                )
+            )
+
         # Query with pagination
-        users_pagination = User.query.paginate(
+        users_pagination = query.paginate(
             page=page,
             per_page=per_page,
             error_out=False
@@ -99,7 +113,8 @@ def get_users():
             "total": users_pagination.total,
             "page": page,
             "per_page": per_page,
-            "total_pages": users_pagination.pages
+            "total_pages": users_pagination.pages,
+            "search": search if search else None
         }), 200
 
     except Exception as e:
@@ -400,12 +415,13 @@ def create_order():
 
 @api.route('/orders', methods=['GET'])
 def get_orders():
-    """Get all orders with user information"""
+    """Get all orders with user information, optional pagination and search"""
     try:
         # Optional pagination
         page = request.args.get('page', 1, type=int)
         per_page = request.args.get('per_page', 10, type=int)
         user_id = request.args.get('user_id', type=int)  # Optional filter
+        search = request.args.get('search', '', type=str).strip()
 
         # Validate pagination parameters
         if page < 1:
@@ -419,6 +435,11 @@ def get_orders():
         # Apply user_id filter if provided
         if user_id:
             query = query.filter(Order.user_id == user_id)
+
+        # Apply search filter if provided (search by product name)
+        if search:
+            search_pattern = f"%{search}%"
+            query = query.filter(Order.product_name.ilike(search_pattern))
 
         # Order by created_at descending and paginate
         orders_pagination = query.order_by(Order.created_at.desc()).paginate(
@@ -434,7 +455,8 @@ def get_orders():
             "total": orders_pagination.total,
             "page": page,
             "per_page": per_page,
-            "total_pages": orders_pagination.pages
+            "total_pages": orders_pagination.pages,
+            "search": search if search else None
         }), 200
 
     except Exception as e:

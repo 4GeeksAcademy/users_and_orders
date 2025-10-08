@@ -11,6 +11,7 @@ export const useOrders = (initialFilters = {}) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [filters, setFilters] = useState(initialFilters);
+  const [searchTerm, setSearchTerm] = useState("");
   const [pagination, setPagination] = useState({
     page: 1,
     per_page: 10,
@@ -24,7 +25,8 @@ export const useOrders = (initialFilters = {}) => {
   const fetchOrders = async (
     page = 1,
     per_page = 10,
-    currentFilters = filters
+    currentFilters = filters,
+    search = searchTerm
   ) => {
     setLoading(true);
     setError(null);
@@ -35,6 +37,10 @@ export const useOrders = (initialFilters = {}) => {
         per_page,
         ...currentFilters, // Incluir filtros en los parámetros
       };
+
+      if (search) {
+        params.search = search;
+      }
 
       const response = await apiService.orders.getAll(params);
       setOrders(response.orders);
@@ -58,7 +64,7 @@ export const useOrders = (initialFilters = {}) => {
   const applyFilters = (newFilters) => {
     setFilters(newFilters);
     setPagination({ ...pagination, page: 1 }); // Resetear a página 1
-    fetchOrders(1, pagination.per_page, newFilters);
+    fetchOrders(1, pagination.per_page, newFilters, searchTerm);
   };
 
   /**
@@ -67,7 +73,24 @@ export const useOrders = (initialFilters = {}) => {
   const clearFilters = () => {
     setFilters({});
     setPagination({ ...pagination, page: 1 });
-    fetchOrders(1, pagination.per_page, {});
+    fetchOrders(1, pagination.per_page, {}, searchTerm);
+  };
+
+  /**
+   * Buscar pedidos por nombre de producto
+   */
+  const searchOrders = (search) => {
+    setSearchTerm(search);
+    setPagination({ ...pagination, page: 1 });
+    fetchOrders(1, pagination.per_page, filters, search);
+  };
+
+  /**
+   * Limpiar búsqueda
+   */
+  const clearSearch = () => {
+    setSearchTerm("");
+    fetchOrders(1, pagination.per_page, filters, "");
   };
 
   /**
@@ -80,7 +103,12 @@ export const useOrders = (initialFilters = {}) => {
     try {
       const newOrder = await apiService.orders.create(orderData);
       // Recargar la lista de pedidos después de crear uno nuevo
-      await fetchOrders(pagination.page, pagination.per_page, filters);
+      await fetchOrders(
+        pagination.page,
+        pagination.per_page,
+        filters,
+        searchTerm
+      );
       return newOrder;
     } catch (err) {
       setError(err.message || "Error al crear el pedido");
@@ -148,7 +176,12 @@ export const useOrders = (initialFilters = {}) => {
       });
 
       // Recargar la lista después de la carga masiva
-      await fetchOrders(pagination.page, pagination.per_page, filters);
+      await fetchOrders(
+        pagination.page,
+        pagination.per_page,
+        filters,
+        searchTerm
+      );
 
       return response;
     } catch (err) {
@@ -174,7 +207,12 @@ export const useOrders = (initialFilters = {}) => {
       );
 
       // Recargar la lista de pedidos después de actualizar
-      await fetchOrders(pagination.page, pagination.per_page, filters);
+      await fetchOrders(
+        pagination.page,
+        pagination.per_page,
+        filters,
+        searchTerm
+      );
 
       return updatedOrder;
     } catch (err) {
@@ -191,7 +229,7 @@ export const useOrders = (initialFilters = {}) => {
    */
   const changePage = (newPage) => {
     if (newPage >= 1 && newPage <= pagination.total_pages) {
-      fetchOrders(newPage, pagination.per_page, filters);
+      fetchOrders(newPage, pagination.per_page, filters, searchTerm);
     }
   };
 
@@ -199,12 +237,12 @@ export const useOrders = (initialFilters = {}) => {
    * Cambiar elementos por página
    */
   const changePerPage = (newPerPage) => {
-    fetchOrders(1, newPerPage, filters);
+    fetchOrders(1, newPerPage, filters, searchTerm);
   };
 
   // Cargar pedidos iniciales
   useEffect(() => {
-    fetchOrders(1, pagination.per_page, filters);
+    fetchOrders(1, pagination.per_page, filters, searchTerm);
   }, []);
 
   return {
@@ -213,6 +251,7 @@ export const useOrders = (initialFilters = {}) => {
     error,
     pagination,
     filters,
+    searchTerm,
     fetchOrders,
     createOrder,
     exportOrders,
@@ -222,6 +261,8 @@ export const useOrders = (initialFilters = {}) => {
     changePerPage,
     applyFilters,
     clearFilters,
+    searchOrders,
+    clearSearch,
   };
 };
 

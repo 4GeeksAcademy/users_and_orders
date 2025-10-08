@@ -14,13 +14,13 @@
 .home-header h1 {
   font-size: 2.5rem;
   font-weight: 700;
-  color: #2c3e50;
+  color: #0f172a;
   margin-bottom: 0.5rem;
 }
 
 .home-subtitle {
   font-size: 1.1rem;
-  color: #7f8c8d;
+  color: #64748b;
   margin: 0;
 }
 
@@ -40,10 +40,11 @@
 
 /* Stat Card */
 .stat-card {
-  background: white;
+  background: #ffffff;
   border-radius: 12px;
   padding: 2rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
   display: flex;
   align-items: center;
   gap: 1.5rem;
@@ -64,7 +65,8 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+  background: #eff6ff;
+  color: #3b82f6;
 }
 
 /* Stat Info */
@@ -76,12 +78,12 @@
   font-size: 2.5rem;
   font-weight: 700;
   margin: 0;
-  color: #2c3e50;
+  color: #0f172a;
 }
 
 .stat-label {
   font-size: 1rem;
-  color: #7f8c8d;
+  color: #64748b;
   margin: 0;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -90,13 +92,13 @@
 
 /* Colores específicos por tipo */
 .stat-users .stat-icon {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: #eff6ff;
+  color: #3b82f6;
 }
 
 .stat-orders .stat-icon {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  color: white;
+  background: #d1fae5;
+  color: #10b981;
 }
 
 /* Actions */

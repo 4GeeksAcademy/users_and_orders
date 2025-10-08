@@ -9,13 +9,13 @@
 }
 
 .orders-header {
-  background-color: #198754;
+  background-color: #10b981;
 }
 
 .orders-info-alert {
-  background-color: #d1ecf1;
-  border-color: #bee5eb;
-  color: #0c5460;
+  background-color: #cffafe;
+  border-color: #06b6d4;
+  color: #164e63;
 }
 
 /* Estilos para el modal de carga masiva */

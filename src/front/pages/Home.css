@@ -1,11 +1,17 @@
-/* Home Container */
+/* ===================================
+   PÁGINA HOME - DASHBOARD PRINCIPAL
+   =================================== */
+
+/* Contenedor principal con ancho limitado y centrado */
 .home-container {
   max-width: 900px;
   margin: 0 auto;
   padding: 2rem 1rem;
 }
 
-/* Header */
+/* ===================================
+   ENCABEZADO
+   =================================== */
 .home-header {
   text-align: center;
   margin-bottom: 3rem;
@@ -24,13 +30,17 @@
   margin: 0;
 }
 
-/* Loading State */
+/* ===================================
+   ESTADO DE CARGA
+   =================================== */
 .loading-stats {
   text-align: center;
   padding: 3rem;
 }
 
-/* Stats Grid */
+/* ===================================
+   GRID DE ESTADÍSTICAS
+   =================================== */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -38,7 +48,9 @@
   margin-bottom: 3rem;
 }
 
-/* Stat Card */
+/* ===================================
+   TARJETAS DE ESTADÍSTICAS
+   =================================== */
 .stat-card {
   background: #ffffff;
   border-radius: 12px;
@@ -48,16 +60,23 @@
   display: flex;
   align-items: center;
   gap: 1.5rem;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
   cursor: pointer;
 }
 
-.stat-card:hover {
+.stat-card:hover,
+.stat-card:focus {
   transform: translateY(-4px);
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+  outline: none;
 }
 
-/* Stat Icon */
+.stat-card:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Iconos de las tarjetas */
 .stat-icon {
   font-size: 3rem;
   width: 70px;
@@ -66,13 +85,13 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: #eff6ff;
-  color: #3b82f6;
+  flex-shrink: 0;
 }
 
-/* Stat Info */
+/* Información numérica */
 .stat-info {
   flex: 1;
+  min-width: 0; /* Previene overflow del texto */
 }
 
 .stat-number {
@@ -80,18 +99,21 @@
   font-weight: 700;
   margin: 0;
   color: #0f172a;
+  line-height: 1;
 }
 
 .stat-label {
   font-size: 1rem;
   color: #64748b;
-  margin: 0;
+  margin: 0.5rem 0 0;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   font-weight: 500;
 }
 
-/* Colores específicos por tipo */
+/* ===================================
+   VARIANTES DE TARJETAS POR TIPO
+   =================================== */
 .stat-users .stat-icon {
   background: #eff6ff;
   color: #3b82f6;
@@ -102,31 +124,9 @@
   color: #10b981;
 }
 
-/* Actions */
-.home-actions {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.action-link {
-  text-decoration: none;
-}
-
-.home-actions .btn {
-  padding: 0.75rem 2rem;
-  font-size: 1rem;
-  font-weight: 600;
-  border-radius: 8px;
-  transition: all 0.2s;
-}
-
-.home-actions .btn:hover {
-  transform: scale(1.05);
-}
-
-/* Responsive */
+/* ===================================
+   DISEÑO RESPONSIVE
+   =================================== */
 @media (max-width: 768px) {
   .home-header h1 {
     font-size: 2rem;
@@ -150,12 +150,23 @@
   .stat-number {
     font-size: 2rem;
   }
+}
 
-  .home-actions {
-    flex-direction: column;
+@media (max-width: 480px) {
+  .home-container {
+    padding: 1rem 0.75rem;
   }
 
-  .home-actions .btn {
-    width: 100%;
+  .home-header {
+    margin-bottom: 2rem;
+  }
+
+  .home-header h1 {
+    font-size: 1.75rem;
+  }
+
+  .stat-card {
+    padding: 1.25rem;
+    gap: 1rem;
   }
 }

@@ -3,6 +3,10 @@ import { useNavigate } from "react-router-dom";
 import apiService from "../services/apiService";
 import "./Home.css";
 
+/**
+ * Componente Home - Dashboard principal de la aplicación
+ * Muestra estadísticas generales y permite navegación rápida a las secciones principales
+ */
 export const Home = () => {
 	const navigate = useNavigate();
 	const [stats, setStats] = useState({
@@ -14,7 +18,8 @@ export const Home = () => {
 	useEffect(() => {
 		const fetchStats = async () => {
 			try {
-				// Obtener datos de usuarios y pedidos
+				// Peticiones paralelas para optimizar el tiempo de carga
+				// Solo obtenemos la primera página para extraer el total de registros
 				const [usersResponse, ordersResponse] = await Promise.all([
 					apiService.users.getAll({ page: 1, per_page: 1 }),
 					apiService.orders.getAll({ page: 1, per_page: 1 }),
@@ -26,7 +31,8 @@ export const Home = () => {
 					loading: false,
 				});
 			} catch (error) {
-				console.error("Error loading stats:", error);
+				console.error("Error al cargar estadísticas:", error);
+				// Mantenemos loading en false para mostrar el dashboard con valores en 0
 				setStats((prev) => ({ ...prev, loading: false }));
 			}
 		};
@@ -34,38 +40,59 @@ export const Home = () => {
 		fetchStats();
 	}, []);
 
-	return (
-		<div className="home-container">
-			<div className="home-header">
-				<h1>📊 Panel de Control</h1>
-				<p className="home-subtitle">Gestión de Usuarios y Pedidos</p>
-			</div>
+	const handleNavigateToUsers = () => navigate('/users');
+	const handleNavigateToOrders = () => navigate('/orders');
 
-			{stats.loading ? (
+	if (stats.loading) {
+		return (
+			<div className="home-container">
 				<div className="loading-stats">
 					<div className="spinner-border text-primary" role="status">
 						<span className="visually-hidden">Cargando...</span>
 					</div>
 				</div>
-			) : (
-				<div className="stats-grid">
-					<div className="stat-card stat-users" onClick={() => navigate('/users')}>
-						<div className="stat-icon">👥</div>
-						<div className="stat-info">
-							<h3 className="stat-number">{stats.totalUsers}</h3>
-							<p className="stat-label">Usuarios</p>
-						</div>
-					</div>
+			</div>
+		);
+	}
 
-					<div className="stat-card stat-orders" onClick={() => navigate('/orders')}>
-						<div className="stat-icon">📦</div>
-						<div className="stat-info">
-							<h3 className="stat-number">{stats.totalOrders}</h3>
-							<p className="stat-label">Pedidos</p>
-						</div>
+	return (
+		<div className="home-container">
+			<header className="home-header">
+				<h1>📊 Panel de Control</h1>
+				<p className="home-subtitle">Gestión de Usuarios y Pedidos</p>
+			</header>
+
+			<div className="stats-grid">
+				<article
+					className="stat-card stat-users"
+					onClick={handleNavigateToUsers}
+					role="button"
+					tabIndex={0}
+					onKeyDown={(e) => e.key === 'Enter' && handleNavigateToUsers()}
+					aria-label={`Ver ${stats.totalUsers} usuarios`}
+				>
+					<div className="stat-icon" aria-hidden="true">👥</div>
+					<div className="stat-info">
+						<h3 className="stat-number">{stats.totalUsers}</h3>
+						<p className="stat-label">Usuarios</p>
 					</div>
-				</div>
-			)}
+				</article>
+
+				<article
+					className="stat-card stat-orders"
+					onClick={handleNavigateToOrders}
+					role="button"
+					tabIndex={0}
+					onKeyDown={(e) => e.key === 'Enter' && handleNavigateToOrders()}
+					aria-label={`Ver ${stats.totalOrders} pedidos`}
+				>
+					<div className="stat-icon" aria-hidden="true">📦</div>
+					<div className="stat-info">
+						<h3 className="stat-number">{stats.totalOrders}</h3>
+						<p className="stat-label">Pedidos</p>
+					</div>
+				</article>
+			</div>
 		</div>
 	);
 };

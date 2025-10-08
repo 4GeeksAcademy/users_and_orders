@@ -18,7 +18,6 @@
 - [Endpoints de la API](#-endpoints-de-la-api)
 - [Estructura del Proyecto](#-estructura-del-proyecto)
 - [Capturas de Pantalla](#-capturas-de-pantalla)
-- [Testing](#-testing)
 - [Deploy](#-deploy)
 
 ---
@@ -67,9 +66,7 @@
 
 ---
 
-## 🎯 Funcionalidades Extra Implementadas
-
-> **Estas funcionalidades NO fueron requeridas pero demuestran excelencia técnica y visión de producto**
+## 🎯 Funcionalidades
 
 ### 🔥 1. **Carga Masiva de Datos (Batch Upload)**
 
@@ -94,7 +91,7 @@
 - 📊 Reportes detallados: "8 creados, 2 fallidos (ver motivos)"
 - 🎨 UX excepcional con preview, validación y feedback visual
 
-📚 **Documentación:** [QUICK_START_BATCH.md](./QUICK_START_BATCH.md) | [BATCH_UPLOAD_GUIDE.md](./BATCH_UPLOAD_GUIDE.md) | [BATCH_RESULTS_DETAILED.md](./BATCH_RESULTS_DETAILED.md)
+**Funcionalidad completa implementada y documentada en el código.**
 
 ---
 
@@ -128,7 +125,7 @@
 - 🎭 Datos realistas para demos y presentaciones
 - 💼 Pruebas de carga con volúmenes variables
 
-📚 **Documentación:** [FAKER_DUMMY_DATA.md](./FAKER_DUMMY_DATA.md)
+**Integración completa con @faker-js/faker para datos realistas.**
 
 ---
 
@@ -137,7 +134,6 @@
 **Funcionalidad:**
 
 - Filtro por usuario desde la tabla de usuarios
-- URL compartible: `/orders?user_id=5&user_name=Juan%20Pérez`
 - Banner informativo: "Mostrando pedidos de: Juan Pérez"
 - Botón "Ver todos" para limpiar filtro
 
@@ -158,7 +154,7 @@
 - 🔗 URLs amigables y compartibles
 - 📱 Experiencia de usuario fluida
 
-📚 **Documentación:** [FEATURE_ORDER_FILTER.md](./FEATURE_ORDER_FILTER.md)
+**Sistema de filtrado contextual implementado.**
 
 ---
 
@@ -184,7 +180,7 @@
 - 📊 Reportes específicos por usuario
 - 🔄 Reutilización de datos (importar en otros sistemas)
 
-📚 **Documentación:** [EXPORT_WITH_FILTERS_UPDATE.md](./EXPORT_WITH_FILTERS_UPDATE.md)
+**Sistema de exportación inteligente con respeto de filtros activos.**
 
 ---
 
@@ -324,7 +320,7 @@ def validate_amount(self, key, amount):
 ### 1️⃣ Clonar el Repositorio
 
 ```bash
-git clone https://github.com/your-username/users_and_orders.git
+git clone https://github.com/4GeeksAcademy/users_and_orders.git
 cd users_and_orders
 ```
 
@@ -539,12 +535,7 @@ users_and_orders/
 │   └── versions/                # Versiones de migraciones
 │
 ├── docs/                        # Documentación adicional
-│   ├── QUICK_START_BATCH.md    # Guía rápida carga masiva
-│   ├── BATCH_UPLOAD_GUIDE.md   # Guía detallada batch
-│   ├── BATCH_RESULTS_DETAILED.md # Visualización de resultados
-│   ├── FAKER_DUMMY_DATA.md     # Uso de Faker.js
-│   ├── FEATURE_ORDER_FILTER.md # Filtrado de pedidos
-│   └── EXPORT_WITH_FILTERS_UPDATE.md # Exportación inteligente
+│   └── assets/                  # Recursos gráficos
 │
 ├── package.json                # Dependencias Node.js
 ├── Pipfile                     # Dependencias Python
@@ -617,49 +608,6 @@ users_and_orders/
 - Colores semánticos para fácil identificación
 
 ---
-
-## 🧪 Testing
-
-### Backend (Flask)
-
-```bash
-# Instalar pytest (si no está instalado)
-pipenv install pytest --dev
-
-# Ejecutar tests
-pipenv run pytest
-
-# Con cobertura
-pipenv run pytest --cov=src/api
-```
-
-**Archivos de test sugeridos:**
-
-```
-tests/
-├── test_models.py      # Tests de modelos
-├── test_routes.py      # Tests de endpoints
-└── test_validations.py # Tests de validaciones
-```
-
-### Frontend (React)
-
-```bash
-# Instalar vitest y testing-library
-npm install --save-dev vitest @testing-library/react
-
-# Ejecutar tests
-npm run test
-```
-
-**Componentes testeables:**
-
-- `UserForm` - Validación de formularios
-- `useUsers` hook - Lógica de estado
-- `apiService` - Llamadas HTTP
-
----
-
 ## 🚀 Deploy
 
 ### Opción 1: Render.com (Recomendado)
@@ -790,15 +738,13 @@ VITE_BACKEND_URL=http://localhost:5000
 
 ### ✨ Lo que hace especial a este proyecto:
 
-1. **📋 Requisitos 100% Cumplidos**
+1. **📋 Requisitos Junior Cumplidos**
 
-   - Todos los puntos obligatorios implementados y testeados
+   - Todos los puntos obligatorios implementados
 
 2. **🎯 Funcionalidades Extra de Valor**
 
    - Carga masiva con validación avanzada
-   - Generación de datos dummy con Faker
-   - Filtrado inteligente con URLs compartibles
    - Exportación a JSON con respeto de filtros
 
 3. **🎨 UX Excepcional**
@@ -844,11 +790,9 @@ Este proyecto fue desarrollado como prueba técnica Fullstack, demostrando:
 
 ## 📞 Contacto
 
-**Desarrollador:** [Tu Nombre]
-**Email:** [tu-email@ejemplo.com]
-**LinkedIn:** [linkedin.com/in/tu-perfil]
-**GitHub:** [github.com/tu-usuario]
-**Portfolio:** [tu-portfolio.com]
+**Desarrollador:** edslogia
+**GitHub:** [github.com/edslogia](https://github.com/edslogia)
+**Repositorio:** [4GeeksAcademy/users_and_orders](https://github.com/4GeeksAcademy/users_and_orders)
 
 ---
 

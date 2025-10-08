@@ -1,21 +1,23 @@
-/* Efecto glassmorphism en el navbar */
-.navbar.navbar-light {
-  position: fixed !important;
+.navbar {
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   z-index: 1000;
-  background-color: rgba(255, 255, 255, 0.15) !important;
-  backdrop-filter: blur(20px) !important;
-  -webkit-backdrop-filter: blur(20px) !important;
-  box-shadow: 0 8px 32px 0 rgba(66, 94, 105, 0.15) !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.3) !important;
-  transition: all 0.3s ease;
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(15px) !important;
+  -webkit-backdrop-filter: blur(15px) !important;
+  box-shadow: 0 4px 16px rgba(66, 94, 105, 0.1) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+  transition: background 0.3s, backdrop-filter 0.3s;
 }
 
-/* Asegurar que el contenedor del navbar sea transparente */
-.navbar .container-fluid {
-  background: transparent !important;
+.navbar.navbar-light {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.navbar.bg-body-tertiary {
+  background-color: rgba(255, 255, 255, 0.1) !important;
 }
 
 .navbar-content {
@@ -26,26 +28,6 @@
   color: #0f172a;
 }
 
-/* Mejorar visibilidad de los enlaces del nav */
-.navbar .nav-link {
-  color: #1e293b !important;
-  font-weight: 500;
-  transition: all 0.3s ease;
-}
-
-.navbar .nav-link:hover {
-  color: #0f172a !important;
-  transform: translateY(-1px);
-}
-
-.navbar .nav-link.active {
-  color: #0f172a !important;
-  font-weight: 600;
-  background-color: rgba(255, 255, 255, 0.4) !important;
-  backdrop-filter: blur(10px);
-  border-radius: 8px;
-}
-
 body {
-  padding-top: 80px; /* Adjust if navbar height changes */
+  padding-top: 64px; /* Adjust if navbar height changes */
 }

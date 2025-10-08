@@ -29,7 +29,7 @@ class Order(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
     product_name: Mapped[str] = mapped_column(String(120), nullable=False)
-    amount: Mapped[float] = mapped_column(Float, nullable=False)
+    amount: Mapped[float] = mapped_column(Integer, nullable=False)
     status: Mapped[str] = mapped_column(
         String(20), default="pending", nullable=False)
     created_at: Mapped[DateTime] = mapped_column(

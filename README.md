@@ -28,6 +28,7 @@
 ### ✅ **Requisitos Obligatorios Completados**
 
 #### Backend (Flask + SQLAlchemy)
+
 - ✅ **CRUD Completo de Usuarios y Pedidos**
 - ✅ **Modelos con ORM (SQLAlchemy)**
   - `User`: id, name, email (único, validado), created_at
@@ -47,6 +48,7 @@
   - Migraciones con Flask-Migrate
 
 #### Frontend (React + Bootstrap)
+
 - ✅ **Diseño Responsivo con Bootstrap 5.3**
 - ✅ **Pantalla de Usuarios**
   - Formulario de creación (nombre + email)
@@ -72,12 +74,14 @@
 ### 🔥 1. **Carga Masiva de Datos (Batch Upload)**
 
 **Backend:**
+
 - Endpoint `POST /api/users/batch` - Hasta 1000 usuarios por lote
 - Endpoint `POST /api/orders/batch` - Hasta 1000 pedidos por lote
 - Validaciones exhaustivas con reportes detallados
 - Manejo de errores parciales (crea los válidos, reporta los fallidos)
 
 **Frontend:**
+
 - Componente `UserBatchUpload` con preview interactivo
 - Componente `OrderBatchUpload` con preview interactivo
 - Descarga de plantillas JSON de ejemplo
@@ -85,6 +89,7 @@
 - **Listas desplegables de éxitos y fallos** con detalles completos
 
 **Beneficios:**
+
 - ⚡ Carga de 100+ usuarios en segundos vs. formulario uno por uno
 - 📊 Reportes detallados: "8 creados, 2 fallidos (ver motivos)"
 - 🎨 UX excepcional con preview, validación y feedback visual
@@ -96,11 +101,13 @@
 ### 🎲 2. **Generación de Datos Dummy con Faker.js**
 
 **Implementación:**
+
 - Integración de `@faker-js/faker` para datos realistas
 - Botones de generación rápida: 5, 10, 25, 50, 100+ registros
 - Datos generados: nombres, emails, productos, cantidades
 
 **Usuarios Dummy:**
+
 ```javascript
 // Genera automáticamente
 { name: "Dr. Sarah Johnson", email: "sarah.johnson@example.com" }
@@ -108,6 +115,7 @@
 ```
 
 **Pedidos Dummy:**
+
 ```javascript
 // Asigna automáticamente a usuarios existentes
 { user_id: 5, product_name: "Refined Steel Table", amount: 3 }
@@ -115,6 +123,7 @@
 ```
 
 **Beneficios:**
+
 - 🚀 Testing instantáneo sin crear JSONs manualmente
 - 🎭 Datos realistas para demos y presentaciones
 - 💼 Pruebas de carga con volúmenes variables
@@ -126,21 +135,25 @@
 ### 🔍 3. **Filtrado Inteligente de Pedidos**
 
 **Funcionalidad:**
+
 - Filtro por usuario desde la tabla de usuarios
 - URL compartible: `/orders?user_id=5&user_name=Juan%20Pérez`
 - Banner informativo: "Mostrando pedidos de: Juan Pérez"
 - Botón "Ver todos" para limpiar filtro
 
 **Backend:**
+
 - Parámetro `user_id` opcional en `GET /api/orders`
 - Filtro aplicado a exportaciones automáticamente
 
 **Frontend:**
+
 - Hook `useOrders` con soporte de filtros dinámicos
 - Sincronización con URL (compartir/copiar enlaces)
 - Estado persistente durante operaciones CRUD
 
 **Beneficios:**
+
 - 🎯 Navegación contextual entre usuarios y pedidos
 - 🔗 URLs amigables y compartibles
 - 📱 Experiencia de usuario fluida
@@ -152,6 +165,7 @@
 ### 📤 4. **Exportación Inteligente a JSON**
 
 **Funcionalidad:**
+
 - Botón "Exportar a JSON" en pedidos y usuarios
 - **Respeta filtros activos**: exporta solo lo que ves
 - Nombres de archivo descriptivos con timestamp
@@ -159,11 +173,13 @@
   - Con filtro: `orders_export_2025-10-08_user_5.json`
 
 **Backend:**
+
 - Endpoint `GET /api/orders/export?user_id=X`
 - Endpoint `GET /api/users/export`
 - Sin paginación (exporta todos los resultados filtrados)
 
 **Beneficios:**
+
 - 💾 Backup de datos en formato portable
 - 📊 Reportes específicos por usuario
 - 🔄 Reutilización de datos (importar en otros sistemas)
@@ -175,6 +191,7 @@
 ### 📱 5. **Diseño UI/UX Excepcional**
 
 **Estilos CSS Personalizados:**
+
 - ✅ Todos los estilos en archivos `.css` separados (NO inline styles)
 - ✅ Cada componente tiene su propio archivo CSS
   - `Users.jsx` → `Users.css`
@@ -183,6 +200,7 @@
   - `OrderTable.jsx` → `OrderTable.css`
 
 **Componentes Destacados:**
+
 - 🎨 Navbar responsive con navegación activa
 - 📊 Tablas con hover effects y estados visuales
 - 🔘 Botones con iconos y estados (loading, disabled)
@@ -191,6 +209,7 @@
 - ✅ Badges de estado con colores semánticos
 
 **Paleta de Colores:**
+
 - Verde: Operaciones exitosas
 - Rojo: Errores y eliminaciones
 - Azul: Información y acciones primarias
@@ -218,12 +237,14 @@
 ### 🛠️ 7. **Manejo Avanzado de Errores**
 
 **Backend:**
+
 - Try-catch en todos los endpoints
 - Códigos HTTP apropiados (200, 201, 400, 404, 500)
 - Mensajes descriptivos de error
 - Logging de errores del servidor
 
 **Frontend:**
+
 - Manejo graceful de errores de red
 - Mensajes amigables al usuario
 - Rollback de estado en operaciones fallidas
@@ -234,6 +255,7 @@
 ### 🔐 8. **Validaciones Exhaustivas**
 
 **Backend (Flask):**
+
 ```python
 # Email único y formato válido
 @validates('email')
@@ -251,6 +273,7 @@ def validate_amount(self, key, amount):
 ```
 
 **Frontend (React):**
+
 - Validación en tiempo real en formularios
 - Deshabilita botones hasta validación exitosa
 - Feedback visual inmediato (bordes rojos/verdes)
@@ -260,30 +283,32 @@ def validate_amount(self, key, amount):
 ## 🛠️ Tecnologías Utilizadas
 
 ### Backend
-| Tecnología | Versión | Propósito |
-|------------|---------|-----------|
-| **Python** | 3.10+ | Lenguaje backend |
-| **Flask** | 3.0.x | Framework web |
-| **SQLAlchemy** | 2.x | ORM para base de datos |
-| **Flask-Migrate** | 4.x | Migraciones de DB |
-| **Flask-CORS** | 4.x | Habilitar CORS |
-| **PostgreSQL/SQLite** | - | Base de datos |
+
+| Tecnología            | Versión | Propósito              |
+| --------------------- | ------- | ---------------------- |
+| **Python**            | 3.10+   | Lenguaje backend       |
+| **Flask**             | 3.0.x   | Framework web          |
+| **SQLAlchemy**        | 2.x     | ORM para base de datos |
+| **Flask-Migrate**     | 4.x     | Migraciones de DB      |
+| **Flask-CORS**        | 4.x     | Habilitar CORS         |
+| **PostgreSQL/SQLite** | -       | Base de datos          |
 
 ### Frontend
-| Tecnología | Versión | Propósito |
-|------------|---------|-----------|
-| **React** | 18.2.x | Framework UI |
-| **React Router** | 6.x | Enrutamiento SPA |
-| **Bootstrap** | 5.3.x | Diseño responsivo |
-| **Faker.js** | 8.x | Generación de datos dummy |
-| **Vite** | 5.x | Build tool y dev server |
+
+| Tecnología       | Versión | Propósito                 |
+| ---------------- | ------- | ------------------------- |
+| **React**        | 18.2.x  | Framework UI              |
+| **React Router** | 6.x     | Enrutamiento SPA          |
+| **Bootstrap**    | 5.3.x   | Diseño responsivo         |
+| **Faker.js**     | 8.x     | Generación de datos dummy |
+| **Vite**         | 5.x     | Build tool y dev server   |
 
 ### Herramientas
+
 - **Pipenv** - Gestión de dependencias Python
 - **npm** - Gestión de paquetes Node
 - **Git** - Control de versiones
 - **GitHub Codespaces** - Entorno de desarrollo
-
 
 ---
 
@@ -371,36 +396,37 @@ flask insert-test-users 5
 
 ### 👥 Usuarios (Users)
 
-| Método | Endpoint | Descripción | Body |
-|--------|----------|-------------|------|
-| `GET` | `/api/users` | Listar usuarios (paginado) | - |
-| `GET` | `/api/users?page=1&per_page=10` | Usuarios con paginación | - |
-| `GET` | `/api/users/<id>` | Obtener usuario por ID | - |
-| `GET` | `/api/users/<id>/orders` | Pedidos de un usuario | - |
-| `POST` | `/api/users` | Crear usuario | `{"name": "...", "email": "..."}` |
-| `POST` | `/api/users/batch` | **Carga masiva** (hasta 1000) | `{"users": [{...}]}` |
-| `PUT` | `/api/users/<id>` | Actualizar usuario | `{"name": "...", "email": "..."}` |
-| `DELETE` | `/api/users/<id>` | Eliminar usuario | - |
-| `GET` | `/api/users/export` | **Exportar a JSON** | - |
+| Método   | Endpoint                        | Descripción                   | Body                              |
+| -------- | ------------------------------- | ----------------------------- | --------------------------------- |
+| `GET`    | `/api/users`                    | Listar usuarios (paginado)    | -                                 |
+| `GET`    | `/api/users?page=1&per_page=10` | Usuarios con paginación       | -                                 |
+| `GET`    | `/api/users/<id>`               | Obtener usuario por ID        | -                                 |
+| `GET`    | `/api/users/<id>/orders`        | Pedidos de un usuario         | -                                 |
+| `POST`   | `/api/users`                    | Crear usuario                 | `{"name": "...", "email": "..."}` |
+| `POST`   | `/api/users/batch`              | **Carga masiva** (hasta 1000) | `{"users": [{...}]}`              |
+| `PUT`    | `/api/users/<id>`               | Actualizar usuario            | `{"name": "...", "email": "..."}` |
+| `DELETE` | `/api/users/<id>`               | Eliminar usuario              | -                                 |
+| `GET`    | `/api/users/export`             | **Exportar a JSON**           | -                                 |
 
 ### 📦 Pedidos (Orders)
 
-| Método | Endpoint | Descripción | Body |
-|--------|----------|-------------|------|
-| `GET` | `/api/orders` | Listar pedidos (paginado) | - |
-| `GET` | `/api/orders?user_id=5` | **Filtrar por usuario** | - |
-| `GET` | `/api/orders?page=1&per_page=10` | Pedidos con paginación | - |
-| `GET` | `/api/orders/<id>` | Obtener pedido por ID | - |
-| `POST` | `/api/orders` | Crear pedido | `{"user_id": 1, "product_name": "...", "amount": 5}` |
-| `POST` | `/api/orders/batch` | **Carga masiva** (hasta 1000) | `{"orders": [{...}]}` |
-| `PUT` | `/api/orders/<id>` | Actualizar pedido | `{"product_name": "...", "amount": 10}` |
-| `DELETE` | `/api/orders/<id>` | Eliminar pedido | - |
-| `GET` | `/api/orders/export` | **Exportar a JSON** | - |
-| `GET` | `/api/orders/export?user_id=5` | **Exportar filtrado** | - |
+| Método   | Endpoint                         | Descripción                   | Body                                                 |
+| -------- | -------------------------------- | ----------------------------- | ---------------------------------------------------- |
+| `GET`    | `/api/orders`                    | Listar pedidos (paginado)     | -                                                    |
+| `GET`    | `/api/orders?user_id=5`          | **Filtrar por usuario**       | -                                                    |
+| `GET`    | `/api/orders?page=1&per_page=10` | Pedidos con paginación        | -                                                    |
+| `GET`    | `/api/orders/<id>`               | Obtener pedido por ID         | -                                                    |
+| `POST`   | `/api/orders`                    | Crear pedido                  | `{"user_id": 1, "product_name": "...", "amount": 5}` |
+| `POST`   | `/api/orders/batch`              | **Carga masiva** (hasta 1000) | `{"orders": [{...}]}`                                |
+| `PUT`    | `/api/orders/<id>`               | Actualizar pedido             | `{"product_name": "...", "amount": 10}`              |
+| `DELETE` | `/api/orders/<id>`               | Eliminar pedido               | -                                                    |
+| `GET`    | `/api/orders/export`             | **Exportar a JSON**           | -                                                    |
+| `GET`    | `/api/orders/export?user_id=5`   | **Exportar filtrado**         | -                                                    |
 
 ### 📊 Ejemplos de Respuestas
 
 **GET /api/users**
+
 ```json
 {
   "users": [
@@ -419,6 +445,7 @@ flask insert-test-users 5
 ```
 
 **POST /api/users/batch** (Carga Masiva)
+
 ```json
 {
   "success": true,
@@ -437,6 +464,7 @@ flask insert-test-users 5
 ```
 
 **GET /api/orders?user_id=5**
+
 ```json
 {
   "orders": [
@@ -535,6 +563,7 @@ users_and_orders/
 ![Usuarios](https://via.placeholder.com/800x400/4A90E2/FFFFFF?text=Users+Management+Screen)
 
 **Funcionalidades visibles:**
+
 - Formulario de creación con validación en tiempo real
 - Tabla responsive con paginación
 - Botones de acción: Editar, Eliminar, Ver Pedidos
@@ -549,6 +578,7 @@ users_and_orders/
 ![Pedidos](https://via.placeholder.com/800x400/50C878/FFFFFF?text=Orders+Management+Screen)
 
 **Funcionalidades visibles:**
+
 - Selector de usuario para nuevos pedidos
 - Tabla con información del usuario asociado
 - **Filtro activo** con banner informativo
@@ -563,6 +593,7 @@ users_and_orders/
 ![Batch Upload](https://via.placeholder.com/800x400/FF6B6B/FFFFFF?text=Batch+Upload+with+Preview)
 
 **Funcionalidades visibles:**
+
 - Preview de primeros 10 registros
 - Indicador de total: "... y 40 más"
 - Botones de generación Faker: 10, 25, 50, 100
@@ -577,6 +608,7 @@ users_and_orders/
 ![Batch Results](https://via.placeholder.com/800x400/9B59B6/FFFFFF?text=Detailed+Batch+Results)
 
 **Funcionalidades visibles:**
+
 - Tarjetas de resumen: Total, Exitosos, Fallidos
 - **Lista desplegable de usuarios creados** (verde)
   - ID asignado, nombre, email, timestamp
@@ -602,6 +634,7 @@ pipenv run pytest --cov=src/api
 ```
 
 **Archivos de test sugeridos:**
+
 ```
 tests/
 ├── test_models.py      # Tests de modelos
@@ -620,6 +653,7 @@ npm run test
 ```
 
 **Componentes testeables:**
+
 - `UserForm` - Validación de formularios
 - `useUsers` hook - Lógica de estado
 - `apiService` - Llamadas HTTP
@@ -633,11 +667,13 @@ npm run test
 Este proyecto está configurado para deploy automático en Render.
 
 **Archivos de configuración:**
+
 - `render.yaml` - Configuración de servicios
 - `render_build.sh` - Script de build
 - `Dockerfile.render` - Imagen Docker
 
 **Pasos:**
+
 1. Crea cuenta en [Render.com](https://render.com)
 2. Conecta tu repositorio de GitHub
 3. Render detectará automáticamente `render.yaml`
@@ -645,6 +681,7 @@ Este proyecto está configurado para deploy automático en Render.
 5. ✅ ¡Deploy automático!
 
 **URLs generadas:**
+
 - Frontend: `https://your-app.onrender.com`
 - Backend: `https://your-app-api.onrender.com`
 
@@ -655,12 +692,14 @@ Este proyecto está configurado para deploy automático en Render.
 ### Opción 2: Vercel (Frontend) + Render (Backend)
 
 **Frontend en Vercel:**
+
 ```bash
 npm install -g vercel
 vercel --prod
 ```
 
 **Backend en Render:**
+
 - Sigue los pasos de Opción 1 solo para el backend
 
 ---
@@ -709,6 +748,7 @@ VITE_BACKEND_URL=http://localhost:5000
 ## 🎓 Aprendizajes y Decisiones Técnicas
 
 ### 1. **¿Por qué SQLAlchemy en lugar de SQL puro?**
+
 - ✅ Abstracción de base de datos (SQLite/Postgres sin cambios)
 - ✅ Migraciones automáticas con Flask-Migrate
 - ✅ Validaciones en el modelo (DRY principle)
@@ -716,12 +756,14 @@ VITE_BACKEND_URL=http://localhost:5000
 - ✅ Protección contra SQL injection
 
 ### 2. **¿Por qué Custom Hooks (useUsers, useOrders)?**
+
 - ✅ Reutilización de lógica en múltiples componentes
 - ✅ Separación de concerns (UI vs lógica de datos)
 - ✅ Facilita testing unitario
 - ✅ Código más limpio y mantenible
 
 ### 3. **¿Por qué Archivos CSS Separados?**
+
 - ✅ Cumplimiento de requisitos del proyecto
 - ✅ Mejor organización y mantenibilidad
 - ✅ Facilita trabajo en equipo (evita conflictos)
@@ -729,12 +771,14 @@ VITE_BACKEND_URL=http://localhost:5000
 - ✅ Debugging más sencillo
 
 ### 4. **¿Por qué Implementar Carga Masiva?**
+
 - ✅ Ahorro de tiempo en testing y demos
 - ✅ Funcionalidad real en aplicaciones empresariales
 - ✅ Demuestra conocimiento de UX/performance
 - ✅ Diferenciador en la prueba técnica
 
 ### 5. **¿Por qué Faker.js?**
+
 - ✅ Datos realistas para testing
 - ✅ Sin necesidad de archivos JSON manuales
 - ✅ Testing con diferentes volúmenes (10, 100, 1000+)
@@ -747,27 +791,32 @@ VITE_BACKEND_URL=http://localhost:5000
 ### ✨ Lo que hace especial a este proyecto:
 
 1. **📋 Requisitos 100% Cumplidos**
+
    - Todos los puntos obligatorios implementados y testeados
 
 2. **🎯 Funcionalidades Extra de Valor**
+
    - Carga masiva con validación avanzada
    - Generación de datos dummy con Faker
    - Filtrado inteligente con URLs compartibles
    - Exportación a JSON con respeto de filtros
 
 3. **🎨 UX Excepcional**
+
    - Feedback visual en cada acción
    - Loading states en operaciones asíncronas
    - Mensajes de error descriptivos y útiles
    - Diseño responsive y accesible
 
 4. **🔧 Código Profesional**
+
    - Arquitectura escalable y mantenible
    - Separación de responsabilidades clara
    - Hooks personalizados reutilizables
    - Validaciones exhaustivas (backend + frontend)
 
 5. **📚 Documentación Completa**
+
    - README detallado con ejemplos
    - Guías específicas por funcionalidad
    - Comentarios en código donde necesario
@@ -814,6 +863,7 @@ Este proyecto es de código abierto para fines educativos y de demostración.
 Plantilla base proporcionada por [4Geeks Academy](https://4geeksacademy.com/).
 
 **Tecnologías y librerías utilizadas:**
+
 - React Team por React
 - Pallets por Flask
 - SQLAlchemy Team

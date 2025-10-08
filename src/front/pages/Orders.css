@@ -1,0 +1,56 @@
+/* Estilos específicos para la página de Orders */
+
+.orders-container {
+  margin-top: 2rem;
+}
+
+.orders-card {
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.orders-header {
+  background-color: #10b981;
+}
+
+.orders-info-alert {
+  background-color: #cffafe;
+  border-color: #06b6d4;
+  color: #164e63;
+}
+
+/* Estilos para el modal de carga masiva */
+.batch-result-container {
+  margin-top: 1rem;
+}
+
+/* Animación del chevron en details */
+.batch-result-container details summary {
+  transition: all 0.3s ease;
+}
+
+.batch-result-container details[open] summary i.fa-chevron-right {
+  transform: rotate(90deg);
+  transition: transform 0.3s ease;
+}
+
+.batch-result-container details summary:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+}
+
+/* Tabla sticky header */
+.sticky-top {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+/* Estilos para las filas de errores */
+.table-danger-subtle {
+  background-color: rgba(220, 53, 69, 0.05) !important;
+}
+
+.table-danger-subtle:hover {
+  background-color: rgba(220, 53, 69, 0.1) !important;
+}

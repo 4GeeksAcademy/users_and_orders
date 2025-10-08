@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import apiService from "../services/apiService.js";
 
 const Footer = () => {
 	const [message, setMessage] = useState("");
@@ -8,15 +9,8 @@ const Footer = () => {
 	useEffect(() => {
 		const loadMessage = async () => {
 			try {
-				const backendUrl = import.meta.env.VITE_BACKEND_URL;
-				if (!backendUrl) throw new Error("VITE_BACKEND_URL is not defined in .env file");
-				const response = await fetch(backendUrl + "/api/hello");
-				const data = await response.json();
-				if (response.ok) {
-					setMessage(data.message);
-				} else {
-					setError("Error al conectar con el backend.");
-				}
+				const data = await apiService.hello();
+				setMessage(data.message);
 			} catch (error) {
 				setError(
 					error.message ||

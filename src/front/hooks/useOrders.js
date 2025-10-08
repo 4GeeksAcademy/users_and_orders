@@ -21,7 +21,11 @@ export const useOrders = (initialFilters = {}) => {
   /**
    * Obtener todos los pedidos con paginación y filtros
    */
-  const fetchOrders = async (page = 1, per_page = 10, currentFilters = filters) => {
+  const fetchOrders = async (
+    page = 1,
+    per_page = 10,
+    currentFilters = filters
+  ) => {
     setLoading(true);
     setError(null);
 
@@ -31,7 +35,7 @@ export const useOrders = (initialFilters = {}) => {
         per_page,
         ...currentFilters, // Incluir filtros en los parámetros
       };
-      
+
       const response = await apiService.orders.getAll(params);
       setOrders(response.orders);
       setPagination({
@@ -88,26 +92,32 @@ export const useOrders = (initialFilters = {}) => {
   };
 
   /**
-   * Exportar todos los pedidos a JSON
+   * Exportar pedidos a JSON (respeta filtros activos)
    */
   const exportOrders = async () => {
     setLoading(true);
     setError(null);
 
     try {
-      const response = await apiService.orders.export();
+      // Pasar los filtros activos al exportar
+      const response = await apiService.orders.export(filters);
 
       // Crear un archivo JSON para descargar
       const dataStr = JSON.stringify(response.orders, null, 2);
       const dataBlob = new Blob([dataStr], { type: "application/json" });
       const url = URL.createObjectURL(dataBlob);
 
+      // Nombre del archivo dinámico según filtros
+      let fileName = `orders_export_${new Date().toISOString().split("T")[0]}`;
+      if (filters.user_id) {
+        fileName += `_user_${filters.user_id}`;
+      }
+      fileName += ".json";
+
       // Crear enlace de descarga
       const link = document.createElement("a");
       link.href = url;
-      link.download = `orders_export_${
-        new Date().toISOString().split("T")[0]
-      }.json`;
+      link.download = fileName;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);

@@ -168,10 +168,12 @@ export const apiService = {
       }),
 
     /**
-     * Exportar todos los pedidos a JSON
+     * Exportar todos los pedidos a JSON (con filtros opcionales)
+     * @param {Object} params - Parámetros de filtro opcionales (ej: { user_id: 5 })
      * @returns {Promise} - { success, total, orders: [], exported_at }
      */
-    export: () => request("/api/orders/export"),
+    export: (params = {}) =>
+      request(`/api/orders/export${buildQueryString(params)}`),
 
     /**
      * Crear múltiples pedidos en lote desde JSON

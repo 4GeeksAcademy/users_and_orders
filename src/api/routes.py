@@ -443,10 +443,20 @@ def get_orders():
 
 @api.route('/orders/export', methods=['GET'])
 def export_orders():
-    """Export all orders to JSON"""
+    """Export orders to JSON (with optional filters)"""
     try:
-        # Get all orders without pagination
-        orders = Order.query.join(User).all()
+        # Optional filter by user_id
+        user_id = request.args.get('user_id', type=int)
+
+        # Build query with join
+        query = Order.query.join(User)
+
+        # Apply user_id filter if provided
+        if user_id:
+            query = query.filter(Order.user_id == user_id)
+
+        # Get all orders (no pagination for export)
+        orders = query.order_by(Order.created_at.desc()).all()
 
         # Serialize all orders
         orders_data = [order.serialize() for order in orders]
@@ -455,7 +465,8 @@ def export_orders():
             "success": True,
             "total": len(orders_data),
             "orders": orders_data,
-            "exported_at": datetime.now().isoformat()
+            "exported_at": datetime.now().isoformat(),
+            "filters": {"user_id": user_id} if user_id else {}
         }), 200
 
     except Exception as e:
